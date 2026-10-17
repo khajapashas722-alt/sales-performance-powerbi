@@ -1,0 +1,151 @@
+// =============================================================================
+// DAX Measure Library: Commercial Sales Performance Portfolio
+// Target Environment: Power BI Desktop
+// Architecture: Star Schema (Fact_Sales, Dim_Customer, Dim_Product, Dim_Location, Dim_Date)
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// SECTION 1: CORE REVENUE & VOLUME MEASURES
+// -----------------------------------------------------------------------------
+
+Total Revenue = 
+SUM(Fact_Sales[Sales])
+
+Total Profit = 
+SUM(Fact_Sales[Profit])
+
+Total Cost = 
+[Total Revenue] - [Total Profit]
+
+Total Units Sold = 
+SUM(Fact_Sales[Quantity])
+
+Total Orders = 
+DISTINCTCOUNT(Fact_Sales[Order_ID])
+
+Unique Customers = 
+DISTINCTCOUNT(Fact_Sales[Customer_ID])
+
+
+// -----------------------------------------------------------------------------
+// SECTION 2: FINANCIAL PERFORMANCE & EFFICIENCY RATIOS
+// -----------------------------------------------------------------------------
+
+Profit Margin % = 
+DIVIDE(
+    [Total Profit], 
+    [Total Revenue], 
+    0
+)
+
+Average Order Value (AOV) = 
+DIVIDE(
+    [Total Revenue], 
+    [Total Orders], 
+    0
+)
+
+Average Discount % = 
+AVERAGE(Fact_Sales[Discount])
+
+Profit Per Unit = 
+DIVIDE(
+    [Total Profit], 
+    [Total Units Sold], 
+    0
+)
+
+
+// -----------------------------------------------------------------------------
+// SECTION 3: TIME INTELLIGENCE & YEAR-OVER-YEAR (YoY) ANALYSIS
+// Requires: Official Date Table 'Dim_Date' marked in Power BI
+// -----------------------------------------------------------------------------
+
+Revenue YTD = 
+TOTALYTD(
+    [Total Revenue], 
+    Dim_Date[Date]
+)
+
+Profit YTD = 
+TOTALYTD(
+    [Total Profit], 
+    Dim_Date[Date]
+)
+
+Revenue Prior Year (PY) = 
+CALCULATE(
+    [Total Revenue], 
+    SAMEPERIODLASTYEAR(Dim_Date[Date])
+)
+
+Profit Prior Year (PY) = 
+CALCULATE(
+    [Total Profit], 
+    SAMEPERIODLASTYEAR(Dim_Date[Date])
+)
+
+YoY Revenue Growth $ = 
+VAR CurrentRevenue = [Total Revenue]
+VAR PriorRevenue = [Revenue Prior Year (PY)]
+RETURN
+IF(
+    ISBLANK(PriorRevenue), 
+    BLANK(), 
+    CurrentRevenue - PriorRevenue
+)
+
+YoY Revenue Growth % = 
+DIVIDE(
+    [YoY Revenue Growth $], 
+    [Revenue Prior Year (PY)], 
+    0
+)
+
+YoY Profit Growth % = 
+DIVIDE(
+    [Total Profit] - [Profit Prior Year (PY)], 
+    [Profit Prior Year (PY)], 
+    0
+)
+
+
+// -----------------------------------------------------------------------------
+// SECTION 4: ADVANCED RANKING & CONDITIONAL FORMATTING
+// -----------------------------------------------------------------------------
+
+Customer Sales Rank = 
+IF(
+    HASONEVALUE(Dim_Customer[Customer_Name]),
+    RANKX(
+        ALL(Dim_Customer[Customer_Name]), 
+        [Total Revenue], 
+        , 
+        DESC, 
+        Dense
+    ),
+    BLANK()
+)
+
+Product Sales Rank = 
+IF(
+    HASONEVALUE(Dim_Product[Product_Name]),
+    RANKX(
+        ALL(Dim_Product[Product_Name]), 
+        [Total Revenue], 
+        , 
+        DESC, 
+        Dense
+    ),
+    BLANK()
+)
+
+Profit Margin Color Hex = 
+VAR Margin = [Profit Margin %]
+RETURN
+SWITCH(
+    TRUE(),
+    Margin >= 0.15, "#2ECC71",  // Healthy Green
+    Margin >= 0.05, "#F1C40F",  // Caution Amber
+    "#E74C3C"                   // Alert Red
+)

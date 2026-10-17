@@ -1,0 +1,3 @@
+*.tmp
+*.pbix.bak
+.DS_Store
