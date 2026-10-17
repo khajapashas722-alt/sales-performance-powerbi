@@ -59,15 +59,15 @@ erDiagram
 ---
 
 ## Relationship Specifications
-1. **`Dim_Customer[Customer_ID]` $\xrightarrow{1:M}$ `Fact_Sales[Customer_ID]`**
+1. **`Dim_Customer[Customer ID]` $\xrightarrow{1:M}$ `Fact_Sales[Customer ID]`**
    - Cardinality: One-to-Many ($1:*$)
    - Cross-filter direction: Single (Dimension filters Fact)
-2. **`Dim_Product[Product_ID]` $\xrightarrow{1:M}$ `Fact_Sales[Product_ID]`**
+2. **`Dim_Product[Product ID]` $\xrightarrow{1:M}$ `Fact_Sales[Product ID]`**
    - Cardinality: One-to-Many ($1:*$)
    - Cross-filter direction: Single
-3. **`Dim_Location[Postal_Code]` $\xrightarrow{1:M}$ `Fact_Sales[Postal_Code]`**
+3. **`Dim_Location[Postal Code]` $\xrightarrow{1:M}$ `Fact_Sales[Postal Code]`**
    - Cardinality: One-to-Many ($1:*$)
    - Cross-filter direction: Single
-4. **`Dim_Date[Date]` $\xrightarrow{1:M}$ `Fact_Sales[Order_Date]`**
+4. **`Dim_Date[Date]` $\xrightarrow{1:M}$ `Fact_Sales[Order Date]`**
    - Cardinality: One-to-Many ($1:*$)
    - Cross-filter direction: Single (Marked as Official Date Table in Power BI)

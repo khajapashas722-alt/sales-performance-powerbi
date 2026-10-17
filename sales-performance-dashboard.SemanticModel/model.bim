@@ -1,0 +1,507 @@
+{
+  "name": "SalesPerformanceDataModel",
+  "compatibilityLevel": 1550,
+  "model": {
+    "culture": "en-US",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "en-US",
+    "tables": [
+      {
+        "name": "Fact_Sales",
+        "columns": [
+          {
+            "name": "Row ID",
+            "dataType": "int64",
+            "sourceColumn": "Row ID"
+          },
+          {
+            "name": "Order ID",
+            "dataType": "string",
+            "sourceColumn": "Order ID"
+          },
+          {
+            "name": "Order Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Order Date",
+            "formatString": "yyyy-MM-dd"
+          },
+          {
+            "name": "Ship Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Ship Date",
+            "formatString": "yyyy-MM-dd"
+          },
+          {
+            "name": "Ship Mode",
+            "dataType": "string",
+            "sourceColumn": "Ship Mode"
+          },
+          {
+            "name": "Customer ID",
+            "dataType": "string",
+            "sourceColumn": "Customer ID"
+          },
+          {
+            "name": "Product ID",
+            "dataType": "string",
+            "sourceColumn": "Product ID"
+          },
+          {
+            "name": "Postal Code",
+            "dataType": "string",
+            "sourceColumn": "Postal Code"
+          },
+          {
+            "name": "Sales",
+            "dataType": "double",
+            "sourceColumn": "Sales",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "Quantity",
+            "dataType": "int64",
+            "sourceColumn": "Quantity",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Discount",
+            "dataType": "double",
+            "sourceColumn": "Discount",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "Profit",
+            "dataType": "double",
+            "sourceColumn": "Profit",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_Sales-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"C:/Users/shakj/Documents/data-analytics-portfolio/power-bi/sales-performance-powerbi/data/Fact_Sales.csv\"), [Delimiter=\",\", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {",
+                "        {\"Row ID\", Int64.Type},",
+                "        {\"Order ID\", type text},",
+                "        {\"Order Date\", type date},",
+                "        {\"Ship Date\", type date},",
+                "        {\"Ship Mode\", type text},",
+                "        {\"Customer ID\", type text},",
+                "        {\"Product ID\", type text},",
+                "        {\"Postal Code\", type text},",
+                "        {\"Sales\", type number},",
+                "        {\"Quantity\", Int64.Type},",
+                "        {\"Discount\", type number},",
+                "        {\"Profit\", type number}",
+                "    })",
+                "in",
+                "    ChangeTypes"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Customer",
+        "columns": [
+          {
+            "name": "Customer ID",
+            "dataType": "string",
+            "sourceColumn": "Customer ID",
+            "isKey": true
+          },
+          {
+            "name": "Customer Name",
+            "dataType": "string",
+            "sourceColumn": "Customer Name"
+          },
+          {
+            "name": "Segment",
+            "dataType": "string",
+            "sourceColumn": "Segment"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Customer-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"C:/Users/shakj/Documents/data-analytics-portfolio/power-bi/sales-performance-powerbi/data/Dim_Customer.csv\"), [Delimiter=\",\", Columns=3, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {",
+                "        {\"Customer ID\", type text},",
+                "        {\"Customer Name\", type text},",
+                "        {\"Segment\", type text}",
+                "    }),",
+                "    RemoveDuplicates = Table.Distinct(ChangeTypes, {\"Customer ID\"})",
+                "in",
+                "    RemoveDuplicates"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Product",
+        "columns": [
+          {
+            "name": "Product ID",
+            "dataType": "string",
+            "sourceColumn": "Product ID",
+            "isKey": true
+          },
+          {
+            "name": "Category",
+            "dataType": "string",
+            "sourceColumn": "Category"
+          },
+          {
+            "name": "Sub-Category",
+            "dataType": "string",
+            "sourceColumn": "Sub-Category"
+          },
+          {
+            "name": "Product Name",
+            "dataType": "string",
+            "sourceColumn": "Product Name"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Product-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"C:/Users/shakj/Documents/data-analytics-portfolio/power-bi/sales-performance-powerbi/data/Dim_Product.csv\"), [Delimiter=\",\", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {",
+                "        {\"Product ID\", type text},",
+                "        {\"Category\", type text},",
+                "        {\"Sub-Category\", type text},",
+                "        {\"Product Name\", type text}",
+                "    }),",
+                "    RemoveDuplicates = Table.Distinct(ChangeTypes, {\"Product ID\"})",
+                "in",
+                "    RemoveDuplicates"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Location",
+        "columns": [
+          {
+            "name": "Postal Code",
+            "dataType": "string",
+            "sourceColumn": "Postal Code",
+            "isKey": true
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City"
+          },
+          {
+            "name": "State",
+            "dataType": "string",
+            "sourceColumn": "State"
+          },
+          {
+            "name": "Region",
+            "dataType": "string",
+            "sourceColumn": "Region"
+          },
+          {
+            "name": "Country",
+            "dataType": "string",
+            "sourceColumn": "Country"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Location-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(\"C:/Users/shakj/Documents/data-analytics-portfolio/power-bi/sales-performance-powerbi/data/Dim_Location.csv\"), [Delimiter=\",\", Columns=5, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {",
+                "        {\"Postal Code\", type text},",
+                "        {\"City\", type text},",
+                "        {\"State\", type text},",
+                "        {\"Region\", type text},",
+                "        {\"Country\", type text}",
+                "    }),",
+                "    RemoveDuplicates = Table.Distinct(ChangeTypes, {\"Postal Code\"})",
+                "in",
+                "    RemoveDuplicates"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Date",
+        "dataCategory": "Time",
+        "columns": [
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Date",
+            "formatString": "yyyy-MM-dd",
+            "isKey": true
+          },
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year"
+          },
+          {
+            "name": "Month Number",
+            "dataType": "int64",
+            "sourceColumn": "Month Number"
+          },
+          {
+            "name": "Month Name",
+            "dataType": "string",
+            "sourceColumn": "Month Name"
+          },
+          {
+            "name": "Short Month",
+            "dataType": "string",
+            "sourceColumn": "Short Month",
+            "sortByColumn": "Month Number"
+          },
+          {
+            "name": "Year-Month",
+            "dataType": "string",
+            "sourceColumn": "Year-Month"
+          },
+          {
+            "name": "Quarter",
+            "dataType": "string",
+            "sourceColumn": "Quarter"
+          },
+          {
+            "name": "Day of Week",
+            "dataType": "string",
+            "sourceColumn": "Day of Week"
+          },
+          {
+            "name": "Day of Week Number",
+            "dataType": "int64",
+            "sourceColumn": "Day of Week Number"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Date-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    StartDate = #date(2014, 1, 1),",
+                "    EndDate = #date(2018, 12, 31),",
+                "    TotalDays = Duration.Days(Duration.From(EndDate - StartDate)) + 1,",
+                "    DateList = List.Dates(StartDate, TotalDays, #duration(1, 0, 0, 0)),",
+                "    TableFromList = Table.FromList(DateList, Splitter.SplitByNothing(), {\"Date\"}, null, ExtraValues.Error),",
+                "    SetDateType = Table.TransformColumnTypes(TableFromList, {{\"Date\", type date}}),",
+                "    AddYear = Table.AddColumn(SetDateType, \"Year\", each Date.Year([Date]), Int64.Type),",
+                "    AddMonthNo = Table.AddColumn(AddYear, \"Month Number\", each Date.Month([Date]), Int64.Type),",
+                "    AddMonthName = Table.AddColumn(AddMonthNo, \"Month Name\", each Date.MonthName([Date]), type text),",
+                "    AddShortMonth = Table.AddColumn(AddMonthName, \"Short Month\", each Text.Start([Month Name], 3), type text),",
+                "    AddYearMonth = Table.AddColumn(AddShortMonth, \"Year-Month\", each Date.ToText([Date], \"yyyy-MM\"), type text),",
+                "    AddQuarter = Table.AddColumn(AddYearMonth, \"Quarter\", each \"Q\" & Text.From(Date.QuarterOfYear([Date])), type text),",
+                "    AddDayOfWeek = Table.AddColumn(AddQuarter, \"Day of Week\", each Date.DayOfWeekName([Date]), type text),",
+                "    AddDayOfWeekNo = Table.AddColumn(AddDayOfWeek, \"Day of Week Number\", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type)",
+                "in",
+                "    AddDayOfWeekNo"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "_Measures",
+        "columns": [
+          {
+            "name": "RowKey",
+            "dataType": "int64",
+            "sourceColumn": "RowKey",
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "_Measures-Partition",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45WMlSKjQUA\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [RowKey = _t]),",
+                "    ChangeTypes = Table.TransformColumnTypes(Source,{{\"RowKey\", Int64.Type}})",
+                "in",
+                "    ChangeTypes"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Revenue",
+            "expression": "SUM(Fact_Sales[Sales])",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "Total Profit",
+            "expression": "SUM(Fact_Sales[Profit])",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "Total Cost",
+            "expression": "[Total Revenue] - [Total Profit]",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "Total Units Sold",
+            "expression": "SUM(Fact_Sales[Quantity])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Total Orders",
+            "expression": "DISTINCTCOUNT(Fact_Sales[Order ID])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Unique Customers",
+            "expression": "DISTINCTCOUNT(Fact_Sales[Customer ID])",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Profit Margin %",
+            "expression": "DIVIDE([Total Profit], [Total Revenue], 0)",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "Average Order Value (AOV)",
+            "expression": "DIVIDE([Total Revenue], [Total Orders], 0)",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "Average Discount %",
+            "expression": "AVERAGE(Fact_Sales[Discount])",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "Profit Per Unit",
+            "expression": "DIVIDE([Total Profit], [Total Units Sold], 0)",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "Revenue YTD",
+            "expression": "TOTALYTD([Total Revenue], Dim_Date[Date])",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "Profit YTD",
+            "expression": "TOTALYTD([Total Profit], Dim_Date[Date])",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "Revenue Prior Year (PY)",
+            "expression": "CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(Dim_Date[Date]))",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "Profit Prior Year (PY)",
+            "expression": "CALCULATE([Total Profit], SAMEPERIODLASTYEAR(Dim_Date[Date]))",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "YoY Revenue Growth $",
+            "expression": "VAR CurrentRevenue = [Total Revenue] VAR PriorRevenue = [Revenue Prior Year (PY)] RETURN IF(ISBLANK(PriorRevenue), BLANK(), CurrentRevenue - PriorRevenue)",
+            "formatString": "$#,0.00;($#,0.00);$#,0.00"
+          },
+          {
+            "name": "YoY Revenue Growth %",
+            "expression": "DIVIDE([YoY Revenue Growth $], [Revenue Prior Year (PY)], 0)",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "YoY Profit Growth %",
+            "expression": "DIVIDE([Total Profit] - [Profit Prior Year (PY)], [Profit Prior Year (PY)], 0)",
+            "formatString": "0.00%"
+          },
+          {
+            "name": "Customer Sales Rank",
+            "expression": "IF(HASONEVALUE(Dim_Customer[Customer Name]), RANKX(ALL(Dim_Customer[Customer Name]), [Total Revenue], , DESC, Dense), BLANK())",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Product Sales Rank",
+            "expression": "IF(HASONEVALUE(Dim_Product[Product Name]), RANKX(ALL(Dim_Product[Product Name]), [Total Revenue], , DESC, Dense), BLANK())",
+            "formatString": "#,0"
+          },
+          {
+            "name": "Profit Margin Color Hex",
+            "expression": "VAR Margin = [Profit Margin %] RETURN SWITCH(TRUE(), Margin >= 0.15, \"#2ECC71\", Margin >= 0.05, \"#F1C40F\", \"#E74C3C\")"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "Fact_Sales_Customer_Rel",
+        "fromTable": "Fact_Sales",
+        "fromColumn": "Customer ID",
+        "toTable": "Dim_Customer",
+        "toColumn": "Customer ID",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "Fact_Sales_Product_Rel",
+        "fromTable": "Fact_Sales",
+        "fromColumn": "Product ID",
+        "toTable": "Dim_Product",
+        "toColumn": "Product ID",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "Fact_Sales_Location_Rel",
+        "fromTable": "Fact_Sales",
+        "fromColumn": "Postal Code",
+        "toTable": "Dim_Location",
+        "toColumn": "Postal Code",
+        "crossFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "Fact_Sales_Date_Rel",
+        "fromTable": "Fact_Sales",
+        "fromColumn": "Order Date",
+        "toTable": "Dim_Date",
+        "toColumn": "Date",
+        "crossFilteringBehavior": "oneDirection"
+      }
+    ]
+  }
+}

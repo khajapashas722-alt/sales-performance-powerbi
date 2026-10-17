@@ -21,10 +21,10 @@ Total Units Sold =
 SUM(Fact_Sales[Quantity])
 
 Total Orders = 
-DISTINCTCOUNT(Fact_Sales[Order_ID])
+DISTINCTCOUNT(Fact_Sales[Order ID])
 
 Unique Customers = 
-DISTINCTCOUNT(Fact_Sales[Customer_ID])
+DISTINCTCOUNT(Fact_Sales[Customer ID])
 
 
 // -----------------------------------------------------------------------------
@@ -116,9 +116,9 @@ DIVIDE(
 
 Customer Sales Rank = 
 IF(
-    HASONEVALUE(Dim_Customer[Customer_Name]),
+    HASONEVALUE(Dim_Customer[Customer Name]),
     RANKX(
-        ALL(Dim_Customer[Customer_Name]), 
+        ALL(Dim_Customer[Customer Name]), 
         [Total Revenue], 
         , 
         DESC, 
@@ -129,9 +129,9 @@ IF(
 
 Product Sales Rank = 
 IF(
-    HASONEVALUE(Dim_Product[Product_Name]),
+    HASONEVALUE(Dim_Product[Product Name]),
     RANKX(
-        ALL(Dim_Product[Product_Name]), 
+        ALL(Dim_Product[Product Name]), 
         [Total Revenue], 
         , 
         DESC, 

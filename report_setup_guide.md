@@ -1,8 +1,19 @@
 # Power BI Setup & Implementation Guide: Sales Performance Dashboard
 
-This guide provides exact, step-by-step instructions to assemble, configure, and publish the Sales Performance report in **Power BI Desktop**.
+This guide provides exact instructions to open, assemble, configure, and publish the Sales Performance report in **Power BI Desktop**.
 
 ---
+
+## Fast-Track: Open via Power BI Project (`.pbip`) or Template (`.pbit`)
+
+Both native formats are pre-built and ready in this directory:
+1. **Option A (Modern Power BI Project)**: Double-click `sales-performance-dashboard.pbip`. Power BI Desktop loads the project, evaluates the Power Query steps against local CSVs, compiles the model into VertiPaq, and opens both report pages.
+2. **Option B (Power BI Template)**: Double-click `sales-performance-dashboard.pbit`. Power BI Desktop loads the template and evaluates queries.
+3. **Save as `.pbix`**: In Power BI Desktop, click **File** -> **Save As** -> select **Power BI Desktop Document (*.pbix)** -> save as `sales-performance-dashboard.pbix`.
+
+---
+
+## Manual Step-by-Step Scratch Build Instructions
 
 ## Step 1: Ingest Data via Power Query
 1. Open **Power BI Desktop**.

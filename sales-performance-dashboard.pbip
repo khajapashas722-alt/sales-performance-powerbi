@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "artifacts": [
+    {
+      "report": {
+        "path": "sales-performance-dashboard.Report"
+      }
+    }
+  ],
+  "settings": {
+    "enableAutoAuth": true
+  }
+}
