@@ -1,0 +1,34 @@
+table Dim_Customer
+	lineageTag: c55cc33a-81a8-4fc7-81a7-615f0c348551
+
+	column 'Customer ID'
+		dataType: string
+		isKey
+		lineageTag: baa83c76-7db8-4de9-b89c-6adca8bae4a7
+		sourceColumn: Customer ID
+
+	column 'Customer Name'
+		dataType: string
+		lineageTag: bbf95ed3-7a12-4902-9c67-6e775242106b
+		sourceColumn: Customer Name
+
+	column Segment
+		dataType: string
+		lineageTag: 8625d020-5a58-46a1-a2af-1bc52f3262a9
+		sourceColumn: Segment
+
+	partition Dim_Customer-Partition = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:/Users/shakj/Documents/data-analytics-portfolio/power-bi/sales-performance-powerbi/data/Dim_Customer.csv"), [Delimiter=",", Columns=3, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {
+				        {"Customer ID", type text},
+				        {"Customer Name", type text},
+				        {"Segment", type text}
+				    }),
+				    RemoveDuplicates = Table.Distinct(ChangeTypes, {"Customer ID"})
+				in
+				    RemoveDuplicates
+

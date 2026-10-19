@@ -1,0 +1,46 @@
+table Dim_Location
+	lineageTag: 1d3d5175-ad9b-4d31-a97c-674ca8989a69
+
+	column 'Postal Code'
+		dataType: string
+		isKey
+		lineageTag: 4232a12c-d660-4654-9326-e9251beaccc7
+		sourceColumn: Postal Code
+
+	column City
+		dataType: string
+		lineageTag: 4685bc53-13e4-4786-b8e3-854448cc3464
+		sourceColumn: City
+
+	column State
+		dataType: string
+		lineageTag: 01ca07b3-4f69-40b8-b386-cda4e273f7a6
+		sourceColumn: State
+
+	column Region
+		dataType: string
+		lineageTag: 992761e9-1687-4389-93f8-dde06a9b6ea7
+		sourceColumn: Region
+
+	column Country
+		dataType: string
+		lineageTag: c3b93c7e-0e82-4395-99d3-810eb7062009
+		sourceColumn: Country
+
+	partition Dim_Location-Partition = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:/Users/shakj/Documents/data-analytics-portfolio/power-bi/sales-performance-powerbi/data/Dim_Location.csv"), [Delimiter=",", Columns=5, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {
+				        {"Postal Code", type text},
+				        {"City", type text},
+				        {"State", type text},
+				        {"Region", type text},
+				        {"Country", type text}
+				    }),
+				    RemoveDuplicates = Table.Distinct(ChangeTypes, {"Postal Code"})
+				in
+				    RemoveDuplicates
+

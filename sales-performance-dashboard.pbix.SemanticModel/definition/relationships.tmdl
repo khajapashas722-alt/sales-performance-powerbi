@@ -1,0 +1,16 @@
+relationship Fact_Sales_Customer_Rel
+	fromColumn: Fact_Sales.'Customer ID'
+	toColumn: Dim_Customer.'Customer ID'
+
+relationship Fact_Sales_Product_Rel
+	fromColumn: Fact_Sales.'Product ID'
+	toColumn: Dim_Product.'Product ID'
+
+relationship Fact_Sales_Location_Rel
+	fromColumn: Fact_Sales.'Postal Code'
+	toColumn: Dim_Location.'Postal Code'
+
+relationship Fact_Sales_Date_Rel
+	fromColumn: Fact_Sales.'Order Date'
+	toColumn: Dim_Date.Date
+

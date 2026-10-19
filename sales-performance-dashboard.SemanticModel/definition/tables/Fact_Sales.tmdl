@@ -1,0 +1,92 @@
+table Fact_Sales
+	lineageTag: 113068ef-2a83-46e4-99bf-fc47044300fa
+
+	column 'Row ID'
+		dataType: int64
+		lineageTag: 4ab0475f-0754-4a41-8f31-983c996be5fa
+		sourceColumn: Row ID
+
+	column 'Order ID'
+		dataType: string
+		lineageTag: 0d8b04da-6840-4545-8021-cb0f3c874d65
+		sourceColumn: Order ID
+
+	column 'Order Date'
+		dataType: dateTime
+		formatString: yyyy-MM-dd
+		lineageTag: 8bf0fe80-1410-4d56-8c6a-928f3a51d43f
+		sourceColumn: Order Date
+
+	column 'Ship Date'
+		dataType: dateTime
+		formatString: yyyy-MM-dd
+		lineageTag: df4b2fa5-3022-4009-9639-0a73053d3174
+		sourceColumn: Ship Date
+
+	column 'Ship Mode'
+		dataType: string
+		lineageTag: b7ce1b44-f1ea-401b-9a00-1f032bb54aff
+		sourceColumn: Ship Mode
+
+	column 'Customer ID'
+		dataType: string
+		lineageTag: a80926d7-bf15-4a35-9297-872c0aa2d034
+		sourceColumn: Customer ID
+
+	column 'Product ID'
+		dataType: string
+		lineageTag: f617e0bf-b304-4b3f-9653-1e0dae2550d9
+		sourceColumn: Product ID
+
+	column 'Postal Code'
+		dataType: string
+		lineageTag: 8998ba9a-e663-4f2b-9c64-44db549f26a6
+		sourceColumn: Postal Code
+
+	column Sales
+		dataType: double
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: 3d7351f0-55b5-4ebd-a977-57a52052b9c2
+		sourceColumn: Sales
+
+	column Quantity
+		dataType: int64
+		formatString: #,0
+		lineageTag: bb4a353b-f179-406c-9dd8-60e99dac96d4
+		sourceColumn: Quantity
+
+	column Discount
+		dataType: double
+		formatString: 0.00%
+		lineageTag: b088a3f1-6d4c-4463-8486-3b2757c89f9f
+		sourceColumn: Discount
+
+	column Profit
+		dataType: double
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: fb2fcd16-906e-4f7d-b206-d83e4d34d738
+		sourceColumn: Profit
+
+	partition Fact_Sales-Partition = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:/Users/shakj/Documents/data-analytics-portfolio/power-bi/sales-performance-powerbi/data/Fact_Sales.csv"), [Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {
+				        {"Row ID", Int64.Type},
+				        {"Order ID", type text},
+				        {"Order Date", type date},
+				        {"Ship Date", type date},
+				        {"Ship Mode", type text},
+				        {"Customer ID", type text},
+				        {"Product ID", type text},
+				        {"Postal Code", type text},
+				        {"Sales", type number},
+				        {"Quantity", Int64.Type},
+				        {"Discount", type number},
+				        {"Profit", type number}
+				    })
+				in
+				    ChangeTypes
+

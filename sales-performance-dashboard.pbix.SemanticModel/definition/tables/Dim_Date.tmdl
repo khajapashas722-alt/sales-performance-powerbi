@@ -1,0 +1,80 @@
+table Dim_Date
+	lineageTag: 38bcf0df-5a47-4bf3-9e26-2f98c1a6a470
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: yyyy-MM-dd
+		lineageTag: 491c8203-b15b-45bc-a022-94fc6877d60e
+		sourceColumn: Date
+
+	column Year
+		dataType: int64
+		lineageTag: f8d8fc4c-30e9-4b25-975d-906da1c1e602
+		sourceColumn: Year
+
+	column 'Month Number'
+		dataType: int64
+		lineageTag: 51c05754-1463-434e-a4c8-edf7de8d67dd
+		sourceColumn: Month Number
+
+	column 'Month Name'
+		dataType: string
+		lineageTag: a5be71f1-26e9-4e5b-91b9-137d2ad9ad84
+		sourceColumn: Month Name
+
+	column 'Short Month'
+		dataType: string
+		lineageTag: 3e54485e-348d-49bd-8de9-6247484c5a84
+		sourceColumn: Short Month
+		sortByColumn: 'Month Number'
+
+	column Year-Month
+		dataType: string
+		lineageTag: 24ae27bf-aeae-45bc-8af6-07053dbd19e5
+		sourceColumn: Year-Month
+
+	column Quarter
+		dataType: string
+		lineageTag: e9789dba-8580-49c5-8f4c-f39050e404b9
+		sourceColumn: Quarter
+
+	column 'Day of Week'
+		dataType: string
+		lineageTag: d551d143-f613-446f-b2a0-903c383d4c36
+		sourceColumn: Day of Week
+
+	column 'Day of Week Number'
+		dataType: int64
+		lineageTag: 9741a88f-1ab4-4f08-a31a-69fbf7c5d2c8
+		sourceColumn: Day of Week Number
+
+	column 'Month-Year Date'
+		dataType: dateTime
+		formatString: yyyy-MM-dd
+		lineageTag: 90db37e6-8613-4b2a-ac91-0705e899fdfe
+		sourceColumn: Month-Year Date
+
+	partition Dim_Date-Partition = m
+		mode: import
+		source =
+				let
+				    StartDate = #date(2014, 1, 1),
+				    EndDate = #date(2018, 12, 31),
+				    TotalDays = Duration.Days(Duration.From(EndDate - StartDate)) + 1,
+				    DateList = List.Dates(StartDate, TotalDays, #duration(1, 0, 0, 0)),
+				    TableFromList = Table.FromList(DateList, Splitter.SplitByNothing(), {"Date"}, null, ExtraValues.Error),
+				    SetDateType = Table.TransformColumnTypes(TableFromList, {{"Date", type date}}),
+				    AddYear = Table.AddColumn(SetDateType, "Year", each Date.Year([Date]), Int64.Type),
+				    AddMonthNo = Table.AddColumn(AddYear, "Month Number", each Date.Month([Date]), Int64.Type),
+				    AddMonthName = Table.AddColumn(AddMonthNo, "Month Name", each Date.MonthName([Date]), type text),
+				    AddShortMonth = Table.AddColumn(AddMonthName, "Short Month", each Text.Start([Month Name], 3), type text),
+				    AddYearMonth = Table.AddColumn(AddShortMonth, "Year-Month", each Date.ToText([Date], "yyyy-MM"), type text),
+				    AddQuarter = Table.AddColumn(AddYearMonth, "Quarter", each "Q" & Text.From(Date.QuarterOfYear([Date])), type text),
+				    AddDayOfWeek = Table.AddColumn(AddQuarter, "Day of Week", each Date.DayOfWeekName([Date]), type text),
+				    AddDayOfWeekNo = Table.AddColumn(AddDayOfWeek, "Day of Week Number", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),
+				    AddMonthYearDate = Table.AddColumn(AddDayOfWeekNo, "Month-Year Date", each #date(Date.Year([Date]), Date.Month([Date]), 1), type date)
+				in
+				    AddMonthYearDate
+

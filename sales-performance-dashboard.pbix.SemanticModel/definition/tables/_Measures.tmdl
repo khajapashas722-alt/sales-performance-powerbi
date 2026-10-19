@@ -1,0 +1,97 @@
+table _Measures
+	lineageTag: cfe21fb2-cb04-4472-b862-5939e630b154
+
+	measure 'Total Revenue' = SUM(Fact_Sales[Sales])
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: 2e00a6af-f441-41c5-8b6b-9642a77b30f5
+
+	measure 'Total Profit' = SUM(Fact_Sales[Profit])
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: e08afeb3-6981-4dd2-99aa-1d0193f1efe7
+
+	measure 'Total Cost' = [Total Revenue] - [Total Profit]
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: 3bad7670-3c35-4436-89a1-b620b744e9b2
+
+	measure 'Total Units Sold' = SUM(Fact_Sales[Quantity])
+		formatString: #,0
+		lineageTag: 0ec1ae18-51d2-497f-8f78-762ecc346192
+
+	measure 'Total Orders' = DISTINCTCOUNT(Fact_Sales[Order ID])
+		formatString: #,0
+		lineageTag: b7debe48-93bd-4ac6-afcf-9f1b18b5091a
+
+	measure 'Unique Customers' = DISTINCTCOUNT(Fact_Sales[Customer ID])
+		formatString: #,0
+		lineageTag: 9134f78b-468e-4e4a-8141-18b905a9141e
+
+	measure 'Profit Margin %' = DIVIDE([Total Profit], [Total Revenue], 0)
+		formatString: 0.00%
+		lineageTag: 2c6ccc5c-dd8c-4213-bda0-eb54f6dbd01b
+
+	measure 'Average Order Value (AOV)' = DIVIDE([Total Revenue], [Total Orders], 0)
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: 4ac3fa9e-4479-43c5-bf5c-0194daa28341
+
+	measure 'Average Discount %' = AVERAGE(Fact_Sales[Discount])
+		formatString: 0.00%
+		lineageTag: e9102e0f-fe8b-4262-88fd-e2e154a5cad6
+
+	measure 'Profit Per Unit' = DIVIDE([Total Profit], [Total Units Sold], 0)
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: 899f89f4-4a94-4f92-b1fe-aaefdcf71ee4
+
+	measure 'Revenue YTD' = TOTALYTD([Total Revenue], Dim_Date[Date])
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: 68d9a723-b37c-4e86-bd54-f6810b58aca1
+
+	measure 'Profit YTD' = TOTALYTD([Total Profit], Dim_Date[Date])
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: efb70b8e-2f7c-4be4-8652-78b5b18bc23f
+
+	measure 'Revenue Prior Year (PY)' = CALCULATE([Total Revenue], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: fb551c1c-2a87-4d7b-8b06-b3a3c620a6f9
+
+	measure 'Profit Prior Year (PY)' = CALCULATE([Total Profit], SAMEPERIODLASTYEAR(Dim_Date[Date]))
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: 98612f6a-69de-4db8-ada7-320976c919d6
+
+	measure 'YoY Revenue Growth $' = VAR CurrentRevenue = [Total Revenue] VAR PriorRevenue = [Revenue Prior Year (PY)] RETURN IF(ISBLANK(PriorRevenue), BLANK(), CurrentRevenue - PriorRevenue)
+		formatString: $#,0.00;($#,0.00);$#,0.00
+		lineageTag: c35620da-90be-4bd5-83b2-0e4b694032b4
+
+	measure 'YoY Revenue Growth %' = DIVIDE([YoY Revenue Growth $], [Revenue Prior Year (PY)], 0)
+		formatString: 0.00%
+		lineageTag: b414a2a6-27ce-44c1-98a7-882f4cec0ec3
+
+	measure 'YoY Profit Growth %' = DIVIDE([Total Profit] - [Profit Prior Year (PY)], [Profit Prior Year (PY)], 0)
+		formatString: 0.00%
+		lineageTag: 06ebd18d-b055-4f7a-a832-4acb54f674ef
+
+	measure 'Customer Sales Rank' = IF(HASONEVALUE(Dim_Customer[Customer Name]), RANKX(ALL(Dim_Customer[Customer Name]), [Total Revenue], , DESC, Dense), BLANK())
+		formatString: #,0
+		lineageTag: 352b5a60-727a-42ae-9075-e7e440b12272
+
+	measure 'Product Sales Rank' = IF(HASONEVALUE(Dim_Product[Product Name]), RANKX(ALL(Dim_Product[Product Name]), [Total Revenue], , DESC, Dense), BLANK())
+		formatString: #,0
+		lineageTag: e1e471ed-31e7-499f-a736-d1bd6f108cb5
+
+	measure 'Profit Margin Color Hex' = VAR Margin = [Profit Margin %] RETURN SWITCH(TRUE(), Margin >= 0.15, "#2ECC71", Margin >= 0.05, "#F1C40F", "#E74C3C")
+		lineageTag: c1bb06ee-15aa-458c-bbf7-e14687d8cd93
+
+	column RowKey
+		dataType: int64
+		isHidden
+		lineageTag: f13013a5-15a1-4879-9522-66db5413ba6e
+		sourceColumn: RowKey
+
+	partition _Measures-Partition = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlSKjQUA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [RowKey = _t]),
+				    ChangeTypes = Table.TransformColumnTypes(Source,{{"RowKey", Int64.Type}})
+				in
+				    ChangeTypes
+

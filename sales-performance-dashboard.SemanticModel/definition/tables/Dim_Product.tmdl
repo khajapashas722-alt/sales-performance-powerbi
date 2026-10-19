@@ -1,0 +1,40 @@
+table Dim_Product
+	lineageTag: 85daa93e-a8f0-4d67-a9f6-51f32cb5cf4a
+
+	column 'Product ID'
+		dataType: string
+		isKey
+		lineageTag: a2b65822-f1a4-4165-a416-c4cf3dbd7252
+		sourceColumn: Product ID
+
+	column Category
+		dataType: string
+		lineageTag: ebe762c7-455d-45b2-b231-077b6f6905cb
+		sourceColumn: Category
+
+	column Sub-Category
+		dataType: string
+		lineageTag: 8b7bf7a2-b98f-4083-8214-01624a566ca0
+		sourceColumn: Sub-Category
+
+	column 'Product Name'
+		dataType: string
+		lineageTag: f1892203-4fb4-4569-8acc-efbb43ac6920
+		sourceColumn: Product Name
+
+	partition Dim_Product-Partition = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:/Users/shakj/Documents/data-analytics-portfolio/power-bi/sales-performance-powerbi/data/Dim_Product.csv"), [Delimiter=",", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    PromoteHeaders = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    ChangeTypes = Table.TransformColumnTypes(PromoteHeaders, {
+				        {"Product ID", type text},
+				        {"Category", type text},
+				        {"Sub-Category", type text},
+				        {"Product Name", type text}
+				    }),
+				    RemoveDuplicates = Table.Distinct(ChangeTypes, {"Product ID"})
+				in
+				    RemoveDuplicates
+
