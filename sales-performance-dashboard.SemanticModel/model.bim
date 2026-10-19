@@ -309,6 +309,12 @@
             "name": "Day of Week Number",
             "dataType": "int64",
             "sourceColumn": "Day of Week Number"
+          },
+          {
+            "name": "Month-Year Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Month-Year Date",
+            "formatString": "yyyy-MM"
           }
         ],
         "partitions": [
@@ -332,9 +338,10 @@
                 "    AddYearMonth = Table.AddColumn(AddShortMonth, \"Year-Month\", each Date.ToText([Date], \"yyyy-MM\"), type text),",
                 "    AddQuarter = Table.AddColumn(AddYearMonth, \"Quarter\", each \"Q\" & Text.From(Date.QuarterOfYear([Date])), type text),",
                 "    AddDayOfWeek = Table.AddColumn(AddQuarter, \"Day of Week\", each Date.DayOfWeekName([Date]), type text),",
-                "    AddDayOfWeekNo = Table.AddColumn(AddDayOfWeek, \"Day of Week Number\", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type)",
+                "    AddDayOfWeekNo = Table.AddColumn(AddDayOfWeek, \"Day of Week Number\", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),",
+                "    AddMonthYearDate = Table.AddColumn(AddDayOfWeekNo, \"Month-Year Date\", each #date(Date.Year([Date]), Date.Month([Date]), 1), type date)",
                 "in",
-                "    AddDayOfWeekNo"
+                "    AddMonthYearDate"
               ]
             }
           }

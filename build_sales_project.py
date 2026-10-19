@@ -170,7 +170,8 @@ def generate_sales_model():
                 {"name": "Year-Month", "dataType": "string", "sourceColumn": "Year-Month"},
                 {"name": "Quarter", "dataType": "string", "sourceColumn": "Quarter"},
                 {"name": "Day of Week", "dataType": "string", "sourceColumn": "Day of Week"},
-                {"name": "Day of Week Number", "dataType": "int64", "sourceColumn": "Day of Week Number"}
+                {"name": "Day of Week Number", "dataType": "int64", "sourceColumn": "Day of Week Number"},
+                {"name": "Month-Year Date", "dataType": "dateTime", "sourceColumn": "Month-Year Date", "formatString": "yyyy-MM"}
             ],
             "partitions": [
                 {
@@ -193,9 +194,10 @@ def generate_sales_model():
                             '    AddYearMonth = Table.AddColumn(AddShortMonth, "Year-Month", each Date.ToText([Date], "yyyy-MM"), type text),',
                             '    AddQuarter = Table.AddColumn(AddYearMonth, "Quarter", each "Q" & Text.From(Date.QuarterOfYear([Date])), type text),',
                             '    AddDayOfWeek = Table.AddColumn(AddQuarter, "Day of Week", each Date.DayOfWeekName([Date]), type text),',
-                            '    AddDayOfWeekNo = Table.AddColumn(AddDayOfWeek, "Day of Week Number", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type)',
+                            '    AddDayOfWeekNo = Table.AddColumn(AddDayOfWeek, "Day of Week Number", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),',
+                            '    AddMonthYearDate = Table.AddColumn(AddDayOfWeekNo, "Month-Year Date", each #date(Date.Year([Date]), Date.Month([Date]), 1), type date)',
                             "in",
-                            "    AddDayOfWeekNo"
+                            "    AddMonthYearDate"
                         ]
                     }
                 }
@@ -343,14 +345,44 @@ def make_card(name, x, y, width, height, z, table_name, measure_name):
                     },
                     "Name": q_ref
                 }]
+            },
+            "objects": {
+                "labels": [{
+                    "properties": {
+                        "fontSize": {"expr": {"Literal": {"Value": "24D"}}},
+                        "color": {"solid": {"color": {"expr": {"Literal": {"Value": "'#1A365D'"}}}}}
+                    }
+                }],
+                "categoryLabels": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "fontSize": {"expr": {"Literal": {"Value": "10D"}}},
+                        "color": {"solid": {"color": {"expr": {"Literal": {"Value": "'#64748B'"}}}}}
+                    }
+                }]
             }
         }
     }
     return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
 
-def make_slicer(name, x, y, width, height, z, table_name, col_name):
+def make_slicer(name, x, y, width, height, z, table_name, col_name, title_text=None):
     q_ref = f"{table_name}.{col_name}"
     alias = "s"
+    objects = {
+        "data": [{
+            "properties": {
+                "mode": {"expr": {"Literal": {"Value": "'Dropdown'"}}}
+            }
+        }],
+        "header": [{
+            "properties": {
+                "show": {"expr": {"Literal": {"Value": "true"}}},
+                "fontSize": {"expr": {"Literal": {"Value": "10D"}}}
+            }
+        }]
+    }
+    if title_text:
+        objects["header"][0]["properties"]["titleText"] = {"expr": {"Literal": {"Value": f"'{title_text}'"}}}
     config = {
         "name": name,
         "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
@@ -369,12 +401,13 @@ def make_slicer(name, x, y, width, height, z, table_name, col_name):
                     },
                     "Name": q_ref
                 }]
-            }
+            },
+            "objects": objects
         }
     }
     return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
 
-def make_line_chart(name, x, y, width, height, z, cat_table, cat_col, measure_table, measures):
+def make_line_chart(name, x, y, width, height, z, cat_table, cat_col, measure_table, measures, title_text="Monthly Revenue & Profit Trend"):
     cat_ref = f"{cat_table}.{cat_col}"
     projections = {
         "Category": [{"queryRef": cat_ref, "active": True}],
@@ -408,12 +441,43 @@ def make_line_chart(name, x, y, width, height, z, cat_table, cat_col, measure_ta
                     {"Name": "m", "Entity": measure_table, "Type": 0}
                 ],
                 "Select": select_items
+            },
+            "objects": {
+                "title": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "text": {"expr": {"Literal": {"Value": f"'{title_text}'"}}},
+                        "fontSize": {"expr": {"Literal": {"Value": "12D"}}},
+                        "fontColor": {"solid": {"color": {"expr": {"Literal": {"Value": "'#1A365D'"}}}}}
+                    }
+                }],
+                "categoryAxis": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "axisType": {"expr": {"Literal": {"Value": "'Continuous'"}}},
+                        "showAxisTitle": {"expr": {"Literal": {"Value": "true"}}},
+                        "axisTitle": {"expr": {"Literal": {"Value": "'Order Month'"}}}
+                    }
+                }],
+                "valueAxis": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "showAxisTitle": {"expr": {"Literal": {"Value": "true"}}},
+                        "axisTitle": {"expr": {"Literal": {"Value": "'Amount ($)'"}}}
+                    }
+                }],
+                "legend": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "position": {"expr": {"Literal": {"Value": "'TopLeft'"}}}
+                    }
+                }]
             }
         }
     }
     return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
 
-def make_bar_chart(name, x, y, width, height, z, cat_table, cat_col, measure_table, measures):
+def make_bar_chart(name, x, y, width, height, z, cat_table, cat_col, measure_table, measures, title_text="Sales & Profitability by Product Category"):
     cat_ref = f"{cat_table}.{cat_col}"
     projections = {
         "Category": [{"queryRef": cat_ref, "active": True}],
@@ -447,12 +511,28 @@ def make_bar_chart(name, x, y, width, height, z, cat_table, cat_col, measure_tab
                     {"Name": "m", "Entity": measure_table, "Type": 0}
                 ],
                 "Select": select_items
+            },
+            "objects": {
+                "title": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "text": {"expr": {"Literal": {"Value": f"'{title_text}'"}}},
+                        "fontSize": {"expr": {"Literal": {"Value": "12D"}}},
+                        "fontColor": {"solid": {"color": {"expr": {"Literal": {"Value": "'#1A365D'"}}}}}
+                    }
+                }],
+                "legend": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "position": {"expr": {"Literal": {"Value": "'TopRight'"}}}
+                    }
+                }]
             }
         }
     }
     return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
 
-def make_pie_chart(name, x, y, width, height, z, cat_table, cat_col, measure_table, measure_name):
+def make_pie_chart(name, x, y, width, height, z, cat_table, cat_col, measure_table, measure_name, title_text="Revenue Distribution by Region"):
     cat_ref = f"{cat_table}.{cat_col}"
     m_ref = f"{measure_table}.{measure_name}"
     config = {
@@ -486,12 +566,28 @@ def make_pie_chart(name, x, y, width, height, z, cat_table, cat_col, measure_tab
                         "Name": m_ref
                     }
                 ]
+            },
+            "objects": {
+                "title": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "text": {"expr": {"Literal": {"Value": f"'{title_text}'"}}},
+                        "fontSize": {"expr": {"Literal": {"Value": "12D"}}},
+                        "fontColor": {"solid": {"color": {"expr": {"Literal": {"Value": "'#1A365D'"}}}}}
+                    }
+                }],
+                "legend": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "position": {"expr": {"Literal": {"Value": "'Right'"}}}
+                    }
+                }]
             }
         }
     }
     return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
 
-def make_table(name, x, y, width, height, z, from_tables, fields):
+def make_table(name, x, y, width, height, z, from_tables, fields, title_text=None):
     from_map = {tbl: f"t{i}" for i, tbl in enumerate(from_tables)}
     from_list = [{"Name": alias, "Entity": tbl, "Type": 0} for tbl, alias in from_map.items()]
     projections = {
@@ -517,6 +613,16 @@ def make_table(name, x, y, width, height, z, from_tables, fields):
                 },
                 "Name": q_ref
             })
+    objects = {}
+    if title_text:
+        objects["title"] = [{
+            "properties": {
+                "show": {"expr": {"Literal": {"Value": "true"}}},
+                "text": {"expr": {"Literal": {"Value": f"'{title_text}'"}}},
+                "fontSize": {"expr": {"Literal": {"Value": "12D"}}},
+                "fontColor": {"solid": {"color": {"expr": {"Literal": {"Value": "'#1A365D'"}}}}}
+            }
+        }]
     config = {
         "name": name,
         "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
@@ -527,12 +633,13 @@ def make_table(name, x, y, width, height, z, from_tables, fields):
                 "Version": 2,
                 "From": from_list,
                 "Select": select_items
-            }
+            },
+            "objects": objects
         }
     }
     return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
 
-def make_matrix(name, x, y, width, height, z, row_fields, value_measures):
+def make_matrix(name, x, y, width, height, z, row_fields, value_measures, title_text="Product Category & Sub-Category Performance Matrix"):
     projections = {
         "Rows": [{"queryRef": f"{tbl}.{prop}"} for tbl, prop in row_fields],
         "Values": [{"queryRef": f"_Measures.{m}"} for m in value_measures]
@@ -568,12 +675,35 @@ def make_matrix(name, x, y, width, height, z, row_fields, value_measures):
                 "Version": 2,
                 "From": from_list,
                 "Select": select_items
+            },
+            "objects": {
+                "title": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "text": {"expr": {"Literal": {"Value": f"'{title_text}'"}}},
+                        "fontSize": {"expr": {"Literal": {"Value": "12D"}}},
+                        "fontColor": {"solid": {"color": {"expr": {"Literal": {"Value": "'#1A365D'"}}}}}
+                    }
+                }],
+                "rowHeaders": [{
+                    "properties": {
+                        "stepped": {"expr": {"Literal": {"Value": "false"}}},
+                        "showExpandCollapseButtons": {"expr": {"Literal": {"Value": "true"}}}
+                    }
+                }],
+                "subTotals": [{
+                    "properties": {
+                        "rowSubtotals": {"expr": {"Literal": {"Value": "true"}}},
+                        "perRowLevel": {"expr": {"Literal": {"Value": "true"}}},
+                        "grandTotal": {"expr": {"Literal": {"Value": "true"}}}
+                    }
+                }]
             }
         }
     }
     return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
 
-def make_scatter(name, x, y, width, height, z, cat_table, cat_col, x_measure, y_measure, size_measure):
+def make_scatter(name, x, y, width, height, z, cat_table, cat_col, x_measure, y_measure, size_measure, title_text="Margin Sensitivity vs. Discounting by Sub-Category"):
     projections = {
         "Category": [{"queryRef": f"{cat_table}.{cat_col}"}],
         "X": [{"queryRef": f"_Measures.{x_measure}"}],
@@ -624,47 +754,69 @@ def make_scatter(name, x, y, width, height, z, cat_table, cat_col, x_measure, y_
                 "Version": 2,
                 "From": from_list,
                 "Select": select_items
+            },
+            "objects": {
+                "title": [{
+                    "properties": {
+                        "show": {"expr": {"Literal": {"Value": "true"}}},
+                        "text": {"expr": {"Literal": {"Value": f"'{title_text}'"}}},
+                        "fontSize": {"expr": {"Literal": {"Value": "12D"}}},
+                        "fontColor": {"solid": {"color": {"expr": {"Literal": {"Value": "'#1A365D'"}}}}}
+                    }
+                }],
+                "categoryAxis": [{
+                    "properties": {
+                        "showAxisTitle": {"expr": {"Literal": {"Value": "true"}}},
+                        "axisTitle": {"expr": {"Literal": {"Value": f"'{x_measure}'"}}}
+                    }
+                }],
+                "valueAxis": [{
+                    "properties": {
+                        "showAxisTitle": {"expr": {"Literal": {"Value": "true"}}},
+                        "axisTitle": {"expr": {"Literal": {"Value": f"'{y_measure}'"}}}
+                    }
+                }]
             }
         }
     }
     return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
 
 def generate_sales_report_layout():
-    # Page 1 Visuals
+    # Page 1 Visuals: Executive Sales Overview
     p1_visuals = [
-        make_textbox("HeaderVisual", 20, 10, 1240, 45, 1000, "Commercial Sales & Profitability Performance Dashboard", "18pt"),
-        make_slicer("Slicer_Year", 20, 60, 200, 45, 1500, "Dim_Date", "Year"),
-        make_slicer("Slicer_Region", 230, 60, 200, 45, 1501, "Dim_Location", "Region"),
-        make_slicer("Slicer_Segment", 440, 60, 200, 45, 1502, "Dim_Customer", "Segment"),
-        make_card("Card_TotalRevenue", 20, 115, 235, 85, 2000, "_Measures", "Total Revenue"),
-        make_card("Card_TotalProfit", 270, 115, 235, 85, 2001, "_Measures", "Total Profit"),
-        make_card("Card_ProfitMargin", 520, 115, 235, 85, 2002, "_Measures", "Profit Margin %"),
-        make_card("Card_TotalOrders", 770, 115, 235, 85, 2003, "_Measures", "Total Orders"),
-        make_card("Card_AOV", 1020, 115, 240, 85, 2004, "_Measures", "Average Order Value (AOV)"),
-        make_line_chart("Chart_MonthlyTrend", 20, 210, 730, 250, 3000, "Dim_Date", "Year-Month", "_Measures", ["Total Revenue", "Total Profit"]),
-        make_pie_chart("Chart_RegionDonut", 770, 210, 490, 250, 3001, "Dim_Location", "Region", "_Measures", "Total Revenue"),
-        make_bar_chart("Chart_CategoryPerformance", 20, 470, 550, 235, 3002, "Dim_Product", "Category", "_Measures", ["Total Revenue", "Total Profit"]),
-        make_table("Table_SegmentPerformance", 590, 470, 670, 235, 3003, ["Dim_Customer", "_Measures"], [
+        make_textbox("HeaderVisual", 20, 12, 1240, 42, 1000, "Commercial Sales & Profitability Performance Dashboard", "18pt"),
+        make_slicer("Slicer_Year", 20, 58, 200, 44, 1500, "Dim_Date", "Year"),
+        make_slicer("Slicer_Region", 230, 58, 200, 44, 1501, "Dim_Location", "Region"),
+        make_slicer("Slicer_Segment", 440, 58, 200, 44, 1502, "Dim_Customer", "Segment"),
+        make_card("Card_TotalRevenue", 20, 108, 236, 92, 2000, "_Measures", "Total Revenue"),
+        make_card("Card_TotalProfit", 271, 108, 236, 92, 2001, "_Measures", "Total Profit"),
+        make_card("Card_ProfitMargin", 522, 108, 236, 92, 2002, "_Measures", "Profit Margin %"),
+        make_card("Card_TotalOrders", 773, 108, 236, 92, 2003, "_Measures", "Total Orders"),
+        make_card("Card_AOV", 1024, 108, 236, 92, 2004, "_Measures", "Average Order Value (AOV)"),
+        make_line_chart("Chart_MonthlyTrend", 20, 210, 785, 250, 3000, "Dim_Date", "Month-Year Date", "_Measures", ["Total Revenue", "Total Profit"], "Monthly Revenue & Profit Trend (2014 - 2017)"),
+        make_pie_chart("Chart_RegionDonut", 820, 210, 440, 250, 3001, "Dim_Location", "Region", "_Measures", "Total Revenue", "Revenue Distribution by Region"),
+        make_bar_chart("Chart_CategoryPerformance", 20, 470, 550, 235, 3002, "Dim_Product", "Category", "_Measures", ["Total Revenue", "Total Profit"], "Sales & Profitability by Product Category"),
+        make_table("Table_SegmentPerformance", 585, 470, 675, 235, 3003, ["Dim_Customer", "_Measures"], [
             ("Dim_Customer", "Segment", False),
             ("_Measures", "Total Revenue", True),
             ("_Measures", "Total Profit", True),
             ("_Measures", "Profit Margin %", True),
             ("_Measures", "Total Orders", True)
-        ])
+        ], "Customer Segment Performance Matrix")
     ]
     
-    # Page 2 Visuals
+    # Page 2 Visuals: Product & Profitability Matrix
     p2_visuals = [
-        make_textbox("HeaderVisual_P2", 20, 10, 1240, 45, 1000, "Product Category & Margin Analysis Matrix", "18pt"),
-        make_card("Card_P2_Revenue", 20, 60, 280, 80, 2000, "_Measures", "Total Revenue"),
-        make_card("Card_P2_Profit", 320, 60, 280, 80, 2001, "_Measures", "Total Profit"),
-        make_card("Card_P2_Margin", 620, 60, 280, 80, 2002, "_Measures", "Profit Margin %"),
-        make_card("Card_P2_AvgDiscount", 920, 60, 340, 80, 2003, "_Measures", "Average Discount %"),
-        make_matrix("Matrix_SubCategory", 20, 150, 720, 310, 3000, [
+        make_textbox("HeaderVisual_P2", 20, 12, 1240, 42, 1000, "Product Category & Margin Analysis Matrix", "18pt"),
+        make_card("Card_P2_Revenue", 20, 58, 298, 88, 2000, "_Measures", "Total Revenue"),
+        make_card("Card_P2_Profit", 334, 58, 298, 88, 2001, "_Measures", "Total Profit"),
+        make_card("Card_P2_Margin", 648, 58, 298, 88, 2002, "_Measures", "Profit Margin %"),
+        make_card("Card_P2_AvgDiscount", 962, 58, 298, 88, 2003, "_Measures", "Average Discount %"),
+        make_matrix("Matrix_SubCategory", 20, 156, 740, 304, 3000, [
             ("Dim_Product", "Category"),
             ("Dim_Product", "Sub-Category")
-        ], ["Total Revenue", "Total Profit", "Profit Margin %", "Average Discount %"]),
-        make_scatter("Scatter_DiscountMargin", 760, 150, 500, 310, 3001, "Dim_Product", "Sub-Category", "Average Discount %", "Profit Margin %", "Total Revenue"),
+        ], ["Total Revenue", "Total Profit", "Profit Margin %", "Average Discount %"], "Product Category & Sub-Category Performance Matrix"),
+        make_scatter("Scatter_DiscountMargin", 775, 156, 485, 304, 3001, "Dim_Product", "Sub-Category", "Average Discount %", "Profit Margin %", "Total Revenue", "Margin Sensitivity vs. Discounting by Sub-Category"),
         make_table("Table_TopProducts", 20, 470, 1240, 235, 3002, ["Dim_Product", "_Measures"], [
             ("Dim_Product", "Product Name", False),
             ("Dim_Product", "Category", False),
@@ -672,7 +824,7 @@ def generate_sales_report_layout():
             ("_Measures", "Total Profit", True),
             ("_Measures", "Profit Margin %", True),
             ("_Measures", "Total Units Sold", True)
-        ])
+        ], "Top Products Performance & Volume Breakdown")
     ]
     
     layout = {
