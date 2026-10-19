@@ -300,8 +300,381 @@ def generate_sales_model():
     }
     return model
 
+def make_textbox(name, x, y, width, height, z, text, font_size="18pt"):
+    config = {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
+        "singleVisual": {
+            "visualType": "textbox",
+            "objects": {
+                "general": [{
+                    "properties": {
+                        "paragraphs": [{
+                            "textRuns": [{
+                                "value": text,
+                                "textStyle": {"fontFamily": "Segoe UI", "fontSize": font_size, "fontWeight": "bold", "color": "#1A365D"}
+                            }]
+                        }]
+                    }
+                }]
+            }
+        }
+    }
+    return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
+
+def make_card(name, x, y, width, height, z, table_name, measure_name):
+    q_ref = f"{table_name}.{measure_name}"
+    alias = "m"
+    config = {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
+        "singleVisual": {
+            "visualType": "card",
+            "projections": {
+                "Values": [{"queryRef": q_ref}]
+            },
+            "prototypeQuery": {
+                "Version": 2,
+                "From": [{"Name": alias, "Entity": table_name, "Type": 0}],
+                "Select": [{
+                    "Measure": {
+                        "Expression": {"SourceRef": {"Source": alias}},
+                        "Property": measure_name
+                    },
+                    "Name": q_ref
+                }]
+            }
+        }
+    }
+    return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
+
+def make_slicer(name, x, y, width, height, z, table_name, col_name):
+    q_ref = f"{table_name}.{col_name}"
+    alias = "s"
+    config = {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
+        "singleVisual": {
+            "visualType": "slicer",
+            "projections": {
+                "Values": [{"queryRef": q_ref}]
+            },
+            "prototypeQuery": {
+                "Version": 2,
+                "From": [{"Name": alias, "Entity": table_name, "Type": 0}],
+                "Select": [{
+                    "Column": {
+                        "Expression": {"SourceRef": {"Source": alias}},
+                        "Property": col_name
+                    },
+                    "Name": q_ref
+                }]
+            }
+        }
+    }
+    return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
+
+def make_line_chart(name, x, y, width, height, z, cat_table, cat_col, measure_table, measures):
+    cat_ref = f"{cat_table}.{cat_col}"
+    projections = {
+        "Category": [{"queryRef": cat_ref, "active": True}],
+        "Y": [{"queryRef": f"{measure_table}.{m}"} for m in measures]
+    }
+    select_items = [{
+        "Column": {
+            "Expression": {"SourceRef": {"Source": "d"}},
+            "Property": cat_col
+        },
+        "Name": cat_ref
+    }]
+    for m in measures:
+        select_items.append({
+            "Measure": {
+                "Expression": {"SourceRef": {"Source": "m"}},
+                "Property": m
+            },
+            "Name": f"{measure_table}.{m}"
+        })
+    config = {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
+        "singleVisual": {
+            "visualType": "lineChart",
+            "projections": projections,
+            "prototypeQuery": {
+                "Version": 2,
+                "From": [
+                    {"Name": "d", "Entity": cat_table, "Type": 0},
+                    {"Name": "m", "Entity": measure_table, "Type": 0}
+                ],
+                "Select": select_items
+            }
+        }
+    }
+    return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
+
+def make_bar_chart(name, x, y, width, height, z, cat_table, cat_col, measure_table, measures):
+    cat_ref = f"{cat_table}.{cat_col}"
+    projections = {
+        "Category": [{"queryRef": cat_ref, "active": True}],
+        "Y": [{"queryRef": f"{measure_table}.{m}"} for m in measures]
+    }
+    select_items = [{
+        "Column": {
+            "Expression": {"SourceRef": {"Source": "c"}},
+            "Property": cat_col
+        },
+        "Name": cat_ref
+    }]
+    for m in measures:
+        select_items.append({
+            "Measure": {
+                "Expression": {"SourceRef": {"Source": "m"}},
+                "Property": m
+            },
+            "Name": f"{measure_table}.{m}"
+        })
+    config = {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
+        "singleVisual": {
+            "visualType": "clusteredBarChart",
+            "projections": projections,
+            "prototypeQuery": {
+                "Version": 2,
+                "From": [
+                    {"Name": "c", "Entity": cat_table, "Type": 0},
+                    {"Name": "m", "Entity": measure_table, "Type": 0}
+                ],
+                "Select": select_items
+            }
+        }
+    }
+    return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
+
+def make_pie_chart(name, x, y, width, height, z, cat_table, cat_col, measure_table, measure_name):
+    cat_ref = f"{cat_table}.{cat_col}"
+    m_ref = f"{measure_table}.{measure_name}"
+    config = {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
+        "singleVisual": {
+            "visualType": "pieChart",
+            "projections": {
+                "Category": [{"queryRef": cat_ref}],
+                "Y": [{"queryRef": m_ref}]
+            },
+            "prototypeQuery": {
+                "Version": 2,
+                "From": [
+                    {"Name": "l", "Entity": cat_table, "Type": 0},
+                    {"Name": "m", "Entity": measure_table, "Type": 0}
+                ],
+                "Select": [
+                    {
+                        "Column": {
+                            "Expression": {"SourceRef": {"Source": "l"}},
+                            "Property": cat_col
+                        },
+                        "Name": cat_ref
+                    },
+                    {
+                        "Measure": {
+                            "Expression": {"SourceRef": {"Source": "m"}},
+                            "Property": measure_name
+                        },
+                        "Name": m_ref
+                    }
+                ]
+            }
+        }
+    }
+    return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
+
+def make_table(name, x, y, width, height, z, from_tables, fields):
+    from_map = {tbl: f"t{i}" for i, tbl in enumerate(from_tables)}
+    from_list = [{"Name": alias, "Entity": tbl, "Type": 0} for tbl, alias in from_map.items()]
+    projections = {
+        "Values": [{"queryRef": f"{tbl}.{prop}"} for tbl, prop, is_m in fields]
+    }
+    select_items = []
+    for tbl, prop, is_m in fields:
+        alias = from_map[tbl]
+        q_ref = f"{tbl}.{prop}"
+        if is_m:
+            select_items.append({
+                "Measure": {
+                    "Expression": {"SourceRef": {"Source": alias}},
+                    "Property": prop
+                },
+                "Name": q_ref
+            })
+        else:
+            select_items.append({
+                "Column": {
+                    "Expression": {"SourceRef": {"Source": alias}},
+                    "Property": prop
+                },
+                "Name": q_ref
+            })
+    config = {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
+        "singleVisual": {
+            "visualType": "tableEx",
+            "projections": projections,
+            "prototypeQuery": {
+                "Version": 2,
+                "From": from_list,
+                "Select": select_items
+            }
+        }
+    }
+    return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
+
+def make_matrix(name, x, y, width, height, z, row_fields, value_measures):
+    projections = {
+        "Rows": [{"queryRef": f"{tbl}.{prop}"} for tbl, prop in row_fields],
+        "Values": [{"queryRef": f"_Measures.{m}"} for m in value_measures]
+    }
+    from_list = [
+        {"Name": "p", "Entity": "Dim_Product", "Type": 0},
+        {"Name": "m", "Entity": "_Measures", "Type": 0}
+    ]
+    select_items = []
+    for tbl, prop in row_fields:
+        select_items.append({
+            "Column": {
+                "Expression": {"SourceRef": {"Source": "p"}},
+                "Property": prop
+            },
+            "Name": f"{tbl}.{prop}"
+        })
+    for m in value_measures:
+        select_items.append({
+            "Measure": {
+                "Expression": {"SourceRef": {"Source": "m"}},
+                "Property": m
+            },
+            "Name": f"_Measures.{m}"
+        })
+    config = {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
+        "singleVisual": {
+            "visualType": "pivotTable",
+            "projections": projections,
+            "prototypeQuery": {
+                "Version": 2,
+                "From": from_list,
+                "Select": select_items
+            }
+        }
+    }
+    return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
+
+def make_scatter(name, x, y, width, height, z, cat_table, cat_col, x_measure, y_measure, size_measure):
+    projections = {
+        "Category": [{"queryRef": f"{cat_table}.{cat_col}"}],
+        "X": [{"queryRef": f"_Measures.{x_measure}"}],
+        "Y": [{"queryRef": f"_Measures.{y_measure}"}],
+        "Size": [{"queryRef": f"_Measures.{size_measure}"}]
+    }
+    from_list = [
+        {"Name": "p", "Entity": cat_table, "Type": 0},
+        {"Name": "m", "Entity": "_Measures", "Type": 0}
+    ]
+    select_items = [
+        {
+            "Column": {
+                "Expression": {"SourceRef": {"Source": "p"}},
+                "Property": cat_col
+            },
+            "Name": f"{cat_table}.{cat_col}"
+        },
+        {
+            "Measure": {
+                "Expression": {"SourceRef": {"Source": "m"}},
+                "Property": x_measure
+            },
+            "Name": f"_Measures.{x_measure}"
+        },
+        {
+            "Measure": {
+                "Expression": {"SourceRef": {"Source": "m"}},
+                "Property": y_measure
+            },
+            "Name": f"_Measures.{y_measure}"
+        },
+        {
+            "Measure": {
+                "Expression": {"SourceRef": {"Source": "m"}},
+                "Property": size_measure
+            },
+            "Name": f"_Measures.{size_measure}"
+        }
+    ]
+    config = {
+        "name": name,
+        "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
+        "singleVisual": {
+            "visualType": "scatterChart",
+            "projections": projections,
+            "prototypeQuery": {
+                "Version": 2,
+                "From": from_list,
+                "Select": select_items
+            }
+        }
+    }
+    return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
+
 def generate_sales_report_layout():
-    # Report layout JSON
+    # Page 1 Visuals
+    p1_visuals = [
+        make_textbox("HeaderVisual", 20, 10, 1240, 45, 1000, "Commercial Sales & Profitability Performance Dashboard", "18pt"),
+        make_slicer("Slicer_Year", 20, 60, 200, 45, 1500, "Dim_Date", "Year"),
+        make_slicer("Slicer_Region", 230, 60, 200, 45, 1501, "Dim_Location", "Region"),
+        make_slicer("Slicer_Segment", 440, 60, 200, 45, 1502, "Dim_Customer", "Segment"),
+        make_card("Card_TotalRevenue", 20, 115, 235, 85, 2000, "_Measures", "Total Revenue"),
+        make_card("Card_TotalProfit", 270, 115, 235, 85, 2001, "_Measures", "Total Profit"),
+        make_card("Card_ProfitMargin", 520, 115, 235, 85, 2002, "_Measures", "Profit Margin %"),
+        make_card("Card_TotalOrders", 770, 115, 235, 85, 2003, "_Measures", "Total Orders"),
+        make_card("Card_AOV", 1020, 115, 240, 85, 2004, "_Measures", "Average Order Value (AOV)"),
+        make_line_chart("Chart_MonthlyTrend", 20, 210, 730, 250, 3000, "Dim_Date", "Year-Month", "_Measures", ["Total Revenue", "Total Profit"]),
+        make_pie_chart("Chart_RegionDonut", 770, 210, 490, 250, 3001, "Dim_Location", "Region", "_Measures", "Total Revenue"),
+        make_bar_chart("Chart_CategoryPerformance", 20, 470, 550, 235, 3002, "Dim_Product", "Category", "_Measures", ["Total Revenue", "Total Profit"]),
+        make_table("Table_SegmentPerformance", 590, 470, 670, 235, 3003, ["Dim_Customer", "_Measures"], [
+            ("Dim_Customer", "Segment", False),
+            ("_Measures", "Total Revenue", True),
+            ("_Measures", "Total Profit", True),
+            ("_Measures", "Profit Margin %", True),
+            ("_Measures", "Total Orders", True)
+        ])
+    ]
+    
+    # Page 2 Visuals
+    p2_visuals = [
+        make_textbox("HeaderVisual_P2", 20, 10, 1240, 45, 1000, "Product Category & Margin Analysis Matrix", "18pt"),
+        make_card("Card_P2_Revenue", 20, 60, 280, 80, 2000, "_Measures", "Total Revenue"),
+        make_card("Card_P2_Profit", 320, 60, 280, 80, 2001, "_Measures", "Total Profit"),
+        make_card("Card_P2_Margin", 620, 60, 280, 80, 2002, "_Measures", "Profit Margin %"),
+        make_card("Card_P2_AvgDiscount", 920, 60, 340, 80, 2003, "_Measures", "Average Discount %"),
+        make_matrix("Matrix_SubCategory", 20, 150, 720, 310, 3000, [
+            ("Dim_Product", "Category"),
+            ("Dim_Product", "Sub-Category")
+        ], ["Total Revenue", "Total Profit", "Profit Margin %", "Average Discount %"]),
+        make_scatter("Scatter_DiscountMargin", 760, 150, 500, 310, 3001, "Dim_Product", "Sub-Category", "Average Discount %", "Profit Margin %", "Total Revenue"),
+        make_table("Table_TopProducts", 20, 470, 1240, 235, 3002, ["Dim_Product", "_Measures"], [
+            ("Dim_Product", "Product Name", False),
+            ("Dim_Product", "Category", False),
+            ("_Measures", "Total Revenue", True),
+            ("_Measures", "Total Profit", True),
+            ("_Measures", "Profit Margin %", True),
+            ("_Measures", "Total Units Sold", True)
+        ])
+    ]
+    
     layout = {
         "id": 0,
         "resourcePackages": [],
@@ -312,136 +685,7 @@ def generate_sales_report_layout():
                 "displayName": "Executive Sales Overview",
                 "filters": "[]",
                 "ordinal": 0,
-                "visualContainers": [
-                    {
-                        "x": 20, "y": 15, "z": 1000, "width": 1240, "height": 45,
-                        "config": json.dumps({
-                            "name": "HeaderVisual",
-                            "singleVisual": {
-                                "visualType": "textbox",
-                                "objects": {
-                                    "general": [{
-                                        "properties": {
-                                            "paragraphs": [{
-                                                "textRuns": [{
-                                                    "value": "Commercial Sales & Profitability Performance Dashboard",
-                                                    "textStyle": {"fontFamily": "Segoe UI", "fontSize": "18pt", "fontWeight": "bold", "color": "#1A365D"}
-                                                }]
-                                            }]
-                                        }
-                                    }]
-                                }
-                            }
-                        })
-                    },
-                    {
-                        "x": 20, "y": 70, "z": 2000, "width": 230, "height": 95,
-                        "config": json.dumps({
-                            "name": "KpiCard_Revenue",
-                            "singleVisual": {
-                                "visualType": "card",
-                                "projections": {"Fields": [{"queryRef": "_Measures.Total Revenue"}]}
-                            }
-                        })
-                    },
-                    {
-                        "x": 270, "y": 70, "z": 2001, "width": 230, "height": 95,
-                        "config": json.dumps({
-                            "name": "KpiCard_Profit",
-                            "singleVisual": {
-                                "visualType": "card",
-                                "projections": {"Fields": [{"queryRef": "_Measures.Total Profit"}]}
-                            }
-                        })
-                    },
-                    {
-                        "x": 520, "y": 70, "z": 2002, "width": 230, "height": 95,
-                        "config": json.dumps({
-                            "name": "KpiCard_Margin",
-                            "singleVisual": {
-                                "visualType": "card",
-                                "projections": {"Fields": [{"queryRef": "_Measures.Profit Margin %"}]}
-                            }
-                        })
-                    },
-                    {
-                        "x": 770, "y": 70, "z": 2003, "width": 230, "height": 95,
-                        "config": json.dumps({
-                            "name": "KpiCard_Orders",
-                            "singleVisual": {
-                                "visualType": "card",
-                                "projections": {"Fields": [{"queryRef": "_Measures.Total Orders"}]}
-                            }
-                        })
-                    },
-                    {
-                        "x": 1020, "y": 70, "z": 2004, "width": 240, "height": 95,
-                        "config": json.dumps({
-                            "name": "KpiCard_AOV",
-                            "singleVisual": {
-                                "visualType": "card",
-                                "projections": {"Fields": [{"queryRef": "_Measures.Average Order Value (AOV)"}]}
-                            }
-                        })
-                    },
-                    {
-                        "x": 20, "y": 180, "z": 3000, "width": 750, "height": 270,
-                        "config": json.dumps({
-                            "name": "MonthlyTrendChart",
-                            "singleVisual": {
-                                "visualType": "lineChart",
-                                "projections": {
-                                    "Category": [{"queryRef": "Dim_Date.Year-Month"}],
-                                    "Y": [{"queryRef": "_Measures.Total Revenue"}, {"queryRef": "_Measures.Total Profit"}]
-                                }
-                            }
-                        })
-                    },
-                    {
-                        "x": 790, "y": 180, "z": 3001, "width": 470, "height": 270,
-                        "config": json.dumps({
-                            "name": "RegionDonutChart",
-                            "singleVisual": {
-                                "visualType": "pieChart",
-                                "projections": {
-                                    "Category": [{"queryRef": "Dim_Location.Region"}],
-                                    "Y": [{"queryRef": "_Measures.Total Revenue"}]
-                                }
-                            }
-                        })
-                    },
-                    {
-                        "x": 20, "y": 465, "z": 3002, "width": 600, "height": 235,
-                        "config": json.dumps({
-                            "name": "CategoryBarChart",
-                            "singleVisual": {
-                                "visualType": "clusteredBarChart",
-                                "projections": {
-                                    "Category": [{"queryRef": "Dim_Product.Category"}],
-                                    "Y": [{"queryRef": "_Measures.Total Revenue"}, {"queryRef": "_Measures.Total Profit"}]
-                                }
-                            }
-                        })
-                    },
-                    {
-                        "x": 640, "y": 465, "z": 3003, "width": 620, "height": 235,
-                        "config": json.dumps({
-                            "name": "SegmentCustomerTable",
-                            "singleVisual": {
-                                "visualType": "tableEx",
-                                "projections": {
-                                    "Values": [
-                                        {"queryRef": "Dim_Customer.Segment"},
-                                        {"queryRef": "_Measures.Total Revenue"},
-                                        {"queryRef": "_Measures.Total Profit"},
-                                        {"queryRef": "_Measures.Profit Margin %"},
-                                        {"queryRef": "_Measures.Total Orders"}
-                                    ]
-                                }
-                            }
-                        })
-                    }
-                ],
+                "visualContainers": p1_visuals,
                 "config": json.dumps({}),
                 "width": 1280,
                 "height": 720
@@ -452,81 +696,7 @@ def generate_sales_report_layout():
                 "displayName": "Product & Profitability Matrix",
                 "filters": "[]",
                 "ordinal": 1,
-                "visualContainers": [
-                    {
-                        "x": 20, "y": 15, "z": 1000, "width": 1240, "height": 45,
-                        "config": json.dumps({
-                            "name": "HeaderVisual_P2",
-                            "singleVisual": {
-                                "visualType": "textbox",
-                                "objects": {
-                                    "general": [{
-                                        "properties": {
-                                            "paragraphs": [{
-                                                "textRuns": [{
-                                                    "value": "Product Category & Sub-Category Profitability Analysis",
-                                                    "textStyle": {"fontFamily": "Segoe UI", "fontSize": "18pt", "fontWeight": "bold", "color": "#1A365D"}
-                                                }]
-                                            }]
-                                        }
-                                    }]
-                                }
-                            }
-                        })
-                    },
-                    {
-                        "x": 20, "y": 70, "z": 2000, "width": 700, "height": 380,
-                        "config": json.dumps({
-                            "name": "SubCategoryMatrix",
-                            "singleVisual": {
-                                "visualType": "pivotTable",
-                                "projections": {
-                                    "Rows": [{"queryRef": "Dim_Product.Category"}, {"queryRef": "Dim_Product.Sub-Category"}],
-                                    "Values": [
-                                        {"queryRef": "_Measures.Total Revenue"},
-                                        {"queryRef": "_Measures.Total Profit"},
-                                        {"queryRef": "_Measures.Profit Margin %"},
-                                        {"queryRef": "_Measures.Average Discount %"}
-                                    ]
-                                }
-                            }
-                        })
-                    },
-                    {
-                        "x": 740, "y": 70, "z": 2001, "width": 520, "height": 380,
-                        "config": json.dumps({
-                            "name": "DiscountVsMarginScatter",
-                            "singleVisual": {
-                                "visualType": "scatterChart",
-                                "projections": {
-                                    "Category": [{"queryRef": "Dim_Product.Sub-Category"}],
-                                    "X": [{"queryRef": "_Measures.Average Discount %"}],
-                                    "Y": [{"queryRef": "_Measures.Profit Margin %"}],
-                                    "Size": [{"queryRef": "_Measures.Total Revenue"}]
-                                }
-                            }
-                        })
-                    },
-                    {
-                        "x": 20, "y": 465, "z": 3000, "width": 1240, "height": 235,
-                        "config": json.dumps({
-                            "name": "TopProductsTable",
-                            "singleVisual": {
-                                "visualType": "tableEx",
-                                "projections": {
-                                    "Values": [
-                                        {"queryRef": "Dim_Product.Product Name"},
-                                        {"queryRef": "Dim_Product.Category"},
-                                        {"queryRef": "_Measures.Total Revenue"},
-                                        {"queryRef": "_Measures.Total Profit"},
-                                        {"queryRef": "_Measures.Profit Margin %"},
-                                        {"queryRef": "_Measures.Total Units Sold"}
-                                    ]
-                                }
-                            }
-                        })
-                    }
-                ],
+                "visualContainers": p2_visuals,
                 "config": json.dumps({}),
                 "width": 1280,
                 "height": 720

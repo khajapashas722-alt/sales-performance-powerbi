@@ -11,83 +11,120 @@
       "visualContainers": [
         {
           "x": 20,
-          "y": 15,
+          "y": 10,
           "z": 1000,
           "width": 1240,
           "height": 45,
-          "config": "{\"name\": \"HeaderVisual\", \"singleVisual\": {\"visualType\": \"textbox\", \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Commercial Sales & Profitability Performance Dashboard\", \"textStyle\": {\"fontFamily\": \"Segoe UI\", \"fontSize\": \"18pt\", \"fontWeight\": \"bold\", \"color\": \"#1A365D\"}}]}]}}]}}}"
+          "config": "{\"name\": \"HeaderVisual\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 1000, \"width\": 1240, \"height\": 45}}], \"singleVisual\": {\"visualType\": \"textbox\", \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Commercial Sales & Profitability Performance Dashboard\", \"textStyle\": {\"fontFamily\": \"Segoe UI\", \"fontSize\": \"18pt\", \"fontWeight\": \"bold\", \"color\": \"#1A365D\"}}]}]}}]}}}",
+          "filters": "[]"
         },
         {
           "x": 20,
-          "y": 70,
+          "y": 60,
+          "z": 1500,
+          "width": 200,
+          "height": 45,
+          "config": "{\"name\": \"Slicer_Year\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 60, \"z\": 1500, \"width\": 200, \"height\": 45}}], \"singleVisual\": {\"visualType\": \"slicer\", \"projections\": {\"Values\": [{\"queryRef\": \"Dim_Date.Year\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"Dim_Date\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Year\"}, \"Name\": \"Dim_Date.Year\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 230,
+          "y": 60,
+          "z": 1501,
+          "width": 200,
+          "height": 45,
+          "config": "{\"name\": \"Slicer_Region\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 230, \"y\": 60, \"z\": 1501, \"width\": 200, \"height\": 45}}], \"singleVisual\": {\"visualType\": \"slicer\", \"projections\": {\"Values\": [{\"queryRef\": \"Dim_Location.Region\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"Dim_Location\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Region\"}, \"Name\": \"Dim_Location.Region\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 440,
+          "y": 60,
+          "z": 1502,
+          "width": 200,
+          "height": 45,
+          "config": "{\"name\": \"Slicer_Segment\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 440, \"y\": 60, \"z\": 1502, \"width\": 200, \"height\": 45}}], \"singleVisual\": {\"visualType\": \"slicer\", \"projections\": {\"Values\": [{\"queryRef\": \"Dim_Customer.Segment\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"s\", \"Entity\": \"Dim_Customer\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"s\"}}, \"Property\": \"Segment\"}, \"Name\": \"Dim_Customer.Segment\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 115,
           "z": 2000,
-          "width": 230,
-          "height": 95,
-          "config": "{\"name\": \"KpiCard_Revenue\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Fields\": [{\"queryRef\": \"_Measures.Total Revenue\"}]}}}"
+          "width": 235,
+          "height": 85,
+          "config": "{\"name\": \"Card_TotalRevenue\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 115, \"z\": 2000, \"width\": 235, \"height\": 85}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"_Measures.Total Revenue\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Revenue\"}, \"Name\": \"_Measures.Total Revenue\"}]}}}",
+          "filters": "[]"
         },
         {
           "x": 270,
-          "y": 70,
+          "y": 115,
           "z": 2001,
-          "width": 230,
-          "height": 95,
-          "config": "{\"name\": \"KpiCard_Profit\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Fields\": [{\"queryRef\": \"_Measures.Total Profit\"}]}}}"
+          "width": 235,
+          "height": 85,
+          "config": "{\"name\": \"Card_TotalProfit\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 270, \"y\": 115, \"z\": 2001, \"width\": 235, \"height\": 85}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"_Measures.Total Profit\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Profit\"}, \"Name\": \"_Measures.Total Profit\"}]}}}",
+          "filters": "[]"
         },
         {
           "x": 520,
-          "y": 70,
+          "y": 115,
           "z": 2002,
-          "width": 230,
-          "height": 95,
-          "config": "{\"name\": \"KpiCard_Margin\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Fields\": [{\"queryRef\": \"_Measures.Profit Margin %\"}]}}}"
+          "width": 235,
+          "height": 85,
+          "config": "{\"name\": \"Card_ProfitMargin\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 520, \"y\": 115, \"z\": 2002, \"width\": 235, \"height\": 85}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"_Measures.Profit Margin %\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Profit Margin %\"}, \"Name\": \"_Measures.Profit Margin %\"}]}}}",
+          "filters": "[]"
         },
         {
           "x": 770,
-          "y": 70,
+          "y": 115,
           "z": 2003,
-          "width": 230,
-          "height": 95,
-          "config": "{\"name\": \"KpiCard_Orders\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Fields\": [{\"queryRef\": \"_Measures.Total Orders\"}]}}}"
+          "width": 235,
+          "height": 85,
+          "config": "{\"name\": \"Card_TotalOrders\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 770, \"y\": 115, \"z\": 2003, \"width\": 235, \"height\": 85}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"_Measures.Total Orders\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Orders\"}, \"Name\": \"_Measures.Total Orders\"}]}}}",
+          "filters": "[]"
         },
         {
           "x": 1020,
-          "y": 70,
+          "y": 115,
           "z": 2004,
           "width": 240,
-          "height": 95,
-          "config": "{\"name\": \"KpiCard_AOV\", \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Fields\": [{\"queryRef\": \"_Measures.Average Order Value (AOV)\"}]}}}"
+          "height": 85,
+          "config": "{\"name\": \"Card_AOV\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 1020, \"y\": 115, \"z\": 2004, \"width\": 240, \"height\": 85}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"_Measures.Average Order Value (AOV)\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Average Order Value (AOV)\"}, \"Name\": \"_Measures.Average Order Value (AOV)\"}]}}}",
+          "filters": "[]"
         },
         {
           "x": 20,
-          "y": 180,
+          "y": 210,
           "z": 3000,
-          "width": 750,
-          "height": 270,
-          "config": "{\"name\": \"MonthlyTrendChart\", \"singleVisual\": {\"visualType\": \"lineChart\", \"projections\": {\"Category\": [{\"queryRef\": \"Dim_Date.Year-Month\"}], \"Y\": [{\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}]}}}"
+          "width": 730,
+          "height": 250,
+          "config": "{\"name\": \"Chart_MonthlyTrend\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 210, \"z\": 3000, \"width\": 730, \"height\": 250}}], \"singleVisual\": {\"visualType\": \"lineChart\", \"projections\": {\"Category\": [{\"queryRef\": \"Dim_Date.Year-Month\", \"active\": true}], \"Y\": [{\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"d\", \"Entity\": \"Dim_Date\", \"Type\": 0}, {\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"d\"}}, \"Property\": \"Year-Month\"}, \"Name\": \"Dim_Date.Year-Month\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Revenue\"}, \"Name\": \"_Measures.Total Revenue\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Profit\"}, \"Name\": \"_Measures.Total Profit\"}]}}}",
+          "filters": "[]"
         },
         {
-          "x": 790,
-          "y": 180,
+          "x": 770,
+          "y": 210,
           "z": 3001,
-          "width": 470,
-          "height": 270,
-          "config": "{\"name\": \"RegionDonutChart\", \"singleVisual\": {\"visualType\": \"pieChart\", \"projections\": {\"Category\": [{\"queryRef\": \"Dim_Location.Region\"}], \"Y\": [{\"queryRef\": \"_Measures.Total Revenue\"}]}}}"
+          "width": 490,
+          "height": 250,
+          "config": "{\"name\": \"Chart_RegionDonut\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 770, \"y\": 210, \"z\": 3001, \"width\": 490, \"height\": 250}}], \"singleVisual\": {\"visualType\": \"pieChart\", \"projections\": {\"Category\": [{\"queryRef\": \"Dim_Location.Region\"}], \"Y\": [{\"queryRef\": \"_Measures.Total Revenue\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"l\", \"Entity\": \"Dim_Location\", \"Type\": 0}, {\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"l\"}}, \"Property\": \"Region\"}, \"Name\": \"Dim_Location.Region\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Revenue\"}, \"Name\": \"_Measures.Total Revenue\"}]}}}",
+          "filters": "[]"
         },
         {
           "x": 20,
-          "y": 465,
+          "y": 470,
           "z": 3002,
-          "width": 600,
+          "width": 550,
           "height": 235,
-          "config": "{\"name\": \"CategoryBarChart\", \"singleVisual\": {\"visualType\": \"clusteredBarChart\", \"projections\": {\"Category\": [{\"queryRef\": \"Dim_Product.Category\"}], \"Y\": [{\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}]}}}"
+          "config": "{\"name\": \"Chart_CategoryPerformance\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 470, \"z\": 3002, \"width\": 550, \"height\": 235}}], \"singleVisual\": {\"visualType\": \"clusteredBarChart\", \"projections\": {\"Category\": [{\"queryRef\": \"Dim_Product.Category\", \"active\": true}], \"Y\": [{\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"c\", \"Entity\": \"Dim_Product\", \"Type\": 0}, {\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"c\"}}, \"Property\": \"Category\"}, \"Name\": \"Dim_Product.Category\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Revenue\"}, \"Name\": \"_Measures.Total Revenue\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Profit\"}, \"Name\": \"_Measures.Total Profit\"}]}}}",
+          "filters": "[]"
         },
         {
-          "x": 640,
-          "y": 465,
+          "x": 590,
+          "y": 470,
           "z": 3003,
-          "width": 620,
+          "width": 670,
           "height": 235,
-          "config": "{\"name\": \"SegmentCustomerTable\", \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"Dim_Customer.Segment\"}, {\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}, {\"queryRef\": \"_Measures.Profit Margin %\"}, {\"queryRef\": \"_Measures.Total Orders\"}]}}}"
+          "config": "{\"name\": \"Table_SegmentPerformance\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 590, \"y\": 470, \"z\": 3003, \"width\": 670, \"height\": 235}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"Dim_Customer.Segment\"}, {\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}, {\"queryRef\": \"_Measures.Profit Margin %\"}, {\"queryRef\": \"_Measures.Total Orders\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"Dim_Customer\", \"Type\": 0}, {\"Name\": \"t1\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Segment\"}, \"Name\": \"Dim_Customer.Segment\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Total Revenue\"}, \"Name\": \"_Measures.Total Revenue\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Total Profit\"}, \"Name\": \"_Measures.Total Profit\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Profit Margin %\"}, \"Name\": \"_Measures.Profit Margin %\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Total Orders\"}, \"Name\": \"_Measures.Total Orders\"}]}}}",
+          "filters": "[]"
         }
       ],
       "config": "{}",
@@ -103,35 +140,75 @@
       "visualContainers": [
         {
           "x": 20,
-          "y": 15,
+          "y": 10,
           "z": 1000,
           "width": 1240,
           "height": 45,
-          "config": "{\"name\": \"HeaderVisual_P2\", \"singleVisual\": {\"visualType\": \"textbox\", \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Product Category & Sub-Category Profitability Analysis\", \"textStyle\": {\"fontFamily\": \"Segoe UI\", \"fontSize\": \"18pt\", \"fontWeight\": \"bold\", \"color\": \"#1A365D\"}}]}]}}]}}}"
+          "config": "{\"name\": \"HeaderVisual_P2\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 10, \"z\": 1000, \"width\": 1240, \"height\": 45}}], \"singleVisual\": {\"visualType\": \"textbox\", \"objects\": {\"general\": [{\"properties\": {\"paragraphs\": [{\"textRuns\": [{\"value\": \"Product Category & Margin Analysis Matrix\", \"textStyle\": {\"fontFamily\": \"Segoe UI\", \"fontSize\": \"18pt\", \"fontWeight\": \"bold\", \"color\": \"#1A365D\"}}]}]}}]}}}",
+          "filters": "[]"
         },
         {
           "x": 20,
-          "y": 70,
+          "y": 60,
           "z": 2000,
-          "width": 700,
-          "height": 380,
-          "config": "{\"name\": \"SubCategoryMatrix\", \"singleVisual\": {\"visualType\": \"pivotTable\", \"projections\": {\"Rows\": [{\"queryRef\": \"Dim_Product.Category\"}, {\"queryRef\": \"Dim_Product.Sub-Category\"}], \"Values\": [{\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}, {\"queryRef\": \"_Measures.Profit Margin %\"}, {\"queryRef\": \"_Measures.Average Discount %\"}]}}}"
+          "width": 280,
+          "height": 80,
+          "config": "{\"name\": \"Card_P2_Revenue\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 60, \"z\": 2000, \"width\": 280, \"height\": 80}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"_Measures.Total Revenue\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Revenue\"}, \"Name\": \"_Measures.Total Revenue\"}]}}}",
+          "filters": "[]"
         },
         {
-          "x": 740,
-          "y": 70,
+          "x": 320,
+          "y": 60,
           "z": 2001,
-          "width": 520,
-          "height": 380,
-          "config": "{\"name\": \"DiscountVsMarginScatter\", \"singleVisual\": {\"visualType\": \"scatterChart\", \"projections\": {\"Category\": [{\"queryRef\": \"Dim_Product.Sub-Category\"}], \"X\": [{\"queryRef\": \"_Measures.Average Discount %\"}], \"Y\": [{\"queryRef\": \"_Measures.Profit Margin %\"}], \"Size\": [{\"queryRef\": \"_Measures.Total Revenue\"}]}}}"
+          "width": 280,
+          "height": 80,
+          "config": "{\"name\": \"Card_P2_Profit\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 320, \"y\": 60, \"z\": 2001, \"width\": 280, \"height\": 80}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"_Measures.Total Profit\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Profit\"}, \"Name\": \"_Measures.Total Profit\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 620,
+          "y": 60,
+          "z": 2002,
+          "width": 280,
+          "height": 80,
+          "config": "{\"name\": \"Card_P2_Margin\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 620, \"y\": 60, \"z\": 2002, \"width\": 280, \"height\": 80}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"_Measures.Profit Margin %\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Profit Margin %\"}, \"Name\": \"_Measures.Profit Margin %\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 920,
+          "y": 60,
+          "z": 2003,
+          "width": 340,
+          "height": 80,
+          "config": "{\"name\": \"Card_P2_AvgDiscount\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 920, \"y\": 60, \"z\": 2003, \"width\": 340, \"height\": 80}}], \"singleVisual\": {\"visualType\": \"card\", \"projections\": {\"Values\": [{\"queryRef\": \"_Measures.Average Discount %\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Average Discount %\"}, \"Name\": \"_Measures.Average Discount %\"}]}}}",
+          "filters": "[]"
         },
         {
           "x": 20,
-          "y": 465,
+          "y": 150,
           "z": 3000,
+          "width": 720,
+          "height": 310,
+          "config": "{\"name\": \"Matrix_SubCategory\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 150, \"z\": 3000, \"width\": 720, \"height\": 310}}], \"singleVisual\": {\"visualType\": \"pivotTable\", \"projections\": {\"Rows\": [{\"queryRef\": \"Dim_Product.Category\"}, {\"queryRef\": \"Dim_Product.Sub-Category\"}], \"Values\": [{\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}, {\"queryRef\": \"_Measures.Profit Margin %\"}, {\"queryRef\": \"_Measures.Average Discount %\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"p\", \"Entity\": \"Dim_Product\", \"Type\": 0}, {\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"p\"}}, \"Property\": \"Category\"}, \"Name\": \"Dim_Product.Category\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"p\"}}, \"Property\": \"Sub-Category\"}, \"Name\": \"Dim_Product.Sub-Category\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Revenue\"}, \"Name\": \"_Measures.Total Revenue\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Profit\"}, \"Name\": \"_Measures.Total Profit\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Profit Margin %\"}, \"Name\": \"_Measures.Profit Margin %\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Average Discount %\"}, \"Name\": \"_Measures.Average Discount %\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 760,
+          "y": 150,
+          "z": 3001,
+          "width": 500,
+          "height": 310,
+          "config": "{\"name\": \"Scatter_DiscountMargin\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 760, \"y\": 150, \"z\": 3001, \"width\": 500, \"height\": 310}}], \"singleVisual\": {\"visualType\": \"scatterChart\", \"projections\": {\"Category\": [{\"queryRef\": \"Dim_Product.Sub-Category\"}], \"X\": [{\"queryRef\": \"_Measures.Average Discount %\"}], \"Y\": [{\"queryRef\": \"_Measures.Profit Margin %\"}], \"Size\": [{\"queryRef\": \"_Measures.Total Revenue\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"p\", \"Entity\": \"Dim_Product\", \"Type\": 0}, {\"Name\": \"m\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"p\"}}, \"Property\": \"Sub-Category\"}, \"Name\": \"Dim_Product.Sub-Category\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Average Discount %\"}, \"Name\": \"_Measures.Average Discount %\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Profit Margin %\"}, \"Name\": \"_Measures.Profit Margin %\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"m\"}}, \"Property\": \"Total Revenue\"}, \"Name\": \"_Measures.Total Revenue\"}]}}}",
+          "filters": "[]"
+        },
+        {
+          "x": 20,
+          "y": 470,
+          "z": 3002,
           "width": 1240,
           "height": 235,
-          "config": "{\"name\": \"TopProductsTable\", \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"Dim_Product.Product Name\"}, {\"queryRef\": \"Dim_Product.Category\"}, {\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}, {\"queryRef\": \"_Measures.Profit Margin %\"}, {\"queryRef\": \"_Measures.Total Units Sold\"}]}}}"
+          "config": "{\"name\": \"Table_TopProducts\", \"layouts\": [{\"id\": 0, \"position\": {\"x\": 20, \"y\": 470, \"z\": 3002, \"width\": 1240, \"height\": 235}}], \"singleVisual\": {\"visualType\": \"tableEx\", \"projections\": {\"Values\": [{\"queryRef\": \"Dim_Product.Product Name\"}, {\"queryRef\": \"Dim_Product.Category\"}, {\"queryRef\": \"_Measures.Total Revenue\"}, {\"queryRef\": \"_Measures.Total Profit\"}, {\"queryRef\": \"_Measures.Profit Margin %\"}, {\"queryRef\": \"_Measures.Total Units Sold\"}]}, \"prototypeQuery\": {\"Version\": 2, \"From\": [{\"Name\": \"t0\", \"Entity\": \"Dim_Product\", \"Type\": 0}, {\"Name\": \"t1\", \"Entity\": \"_Measures\", \"Type\": 0}], \"Select\": [{\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Product Name\"}, \"Name\": \"Dim_Product.Product Name\"}, {\"Column\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t0\"}}, \"Property\": \"Category\"}, \"Name\": \"Dim_Product.Category\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Total Revenue\"}, \"Name\": \"_Measures.Total Revenue\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Total Profit\"}, \"Name\": \"_Measures.Total Profit\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Profit Margin %\"}, \"Name\": \"_Measures.Profit Margin %\"}, {\"Measure\": {\"Expression\": {\"SourceRef\": {\"Source\": \"t1\"}}, \"Property\": \"Total Units Sold\"}, \"Name\": \"_Measures.Total Units Sold\"}]}}}",
+          "filters": "[]"
         }
       ],
       "config": "{}",
