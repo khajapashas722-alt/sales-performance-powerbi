@@ -551,6 +551,7 @@ def main():
     
     # PBIP root file
     pbip_content = {
+        "$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
         "version": "1.0",
         "artifacts": [
             {
@@ -560,7 +561,7 @@ def main():
             }
         ],
         "settings": {
-            "enableAutoAuth": True
+            "enableAutoRecovery": True
         }
     }
     with open(pbip_file, "w", encoding="utf-8") as f:
@@ -568,12 +569,12 @@ def main():
         
     # definition.pbir
     pbir_content = {
+        "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definitionProperties/1.0.0/schema.json",
         "version": "1.0",
         "datasetReference": {
             "byPath": {
                 "path": "../sales-performance-dashboard.SemanticModel"
-            },
-            "byConnection": None
+            }
         }
     }
     with open(os.path.join(rep_dir, "definition.pbir"), "w", encoding="utf-8") as f:
@@ -584,8 +585,12 @@ def main():
         json.dump(layout, f, indent=2)
         
     # definition.pbism
+    pbism_content = {
+        "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/semanticModel/definitionProperties/1.0.0/schema.json",
+        "version": "1.0"
+    }
     with open(os.path.join(sem_dir, "definition.pbism"), "w", encoding="utf-8") as f:
-        json.dump({"version": "1.0"}, f, indent=2)
+        json.dump(pbism_content, f, indent=2)
         
     # model.bim
     with open(os.path.join(sem_dir, "model.bim"), "w", encoding="utf-8") as f:
