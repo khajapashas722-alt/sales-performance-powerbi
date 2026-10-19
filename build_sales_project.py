@@ -302,7 +302,7 @@ def generate_sales_model():
     }
     return model
 
-def make_textbox(name, x, y, width, height, z, text, font_size="18pt"):
+def make_textbox(name, x, y, width, height, z, text, font_size="15pt"):
     config = {
         "name": name,
         "layouts": [{"id": 0, "position": {"x": x, "y": y, "z": z, "width": width, "height": height}}],
@@ -349,7 +349,7 @@ def make_card(name, x, y, width, height, z, table_name, measure_name):
             "objects": {
                 "labels": [{
                     "properties": {
-                        "fontSize": {"expr": {"Literal": {"Value": "24D"}}},
+                        "fontSize": {"expr": {"Literal": {"Value": "20D"}}},
                         "color": {"solid": {"color": {"expr": {"Literal": {"Value": "'#1A365D'"}}}}}
                     }
                 }],
@@ -782,21 +782,21 @@ def make_scatter(name, x, y, width, height, z, cat_table, cat_col, x_measure, y_
     return {"x": x, "y": y, "z": z, "width": width, "height": height, "config": json.dumps(config), "filters": "[]"}
 
 def generate_sales_report_layout():
-    # Page 1 Visuals: Executive Sales Overview
+    # Page 1 Visuals: Executive Sales Overview (Canvas: 1280 x 720)
     p1_visuals = [
-        make_textbox("HeaderVisual", 20, 12, 1240, 42, 1000, "Commercial Sales & Profitability Performance Dashboard", "18pt"),
-        make_slicer("Slicer_Year", 20, 58, 200, 44, 1500, "Dim_Date", "Year"),
-        make_slicer("Slicer_Region", 230, 58, 200, 44, 1501, "Dim_Location", "Region"),
-        make_slicer("Slicer_Segment", 440, 58, 200, 44, 1502, "Dim_Customer", "Segment"),
-        make_card("Card_TotalRevenue", 20, 108, 236, 92, 2000, "_Measures", "Total Revenue"),
-        make_card("Card_TotalProfit", 271, 108, 236, 92, 2001, "_Measures", "Total Profit"),
-        make_card("Card_ProfitMargin", 522, 108, 236, 92, 2002, "_Measures", "Profit Margin %"),
-        make_card("Card_TotalOrders", 773, 108, 236, 92, 2003, "_Measures", "Total Orders"),
-        make_card("Card_AOV", 1024, 108, 236, 92, 2004, "_Measures", "Average Order Value (AOV)"),
-        make_line_chart("Chart_MonthlyTrend", 20, 210, 785, 250, 3000, "Dim_Date", "Month-Year Date", "_Measures", ["Total Revenue", "Total Profit"], "Monthly Revenue & Profit Trend (2014 - 2017)"),
-        make_pie_chart("Chart_RegionDonut", 820, 210, 440, 250, 3001, "Dim_Location", "Region", "_Measures", "Total Revenue", "Revenue Distribution by Region"),
-        make_bar_chart("Chart_CategoryPerformance", 20, 470, 550, 235, 3002, "Dim_Product", "Category", "_Measures", ["Total Revenue", "Total Profit"], "Sales & Profitability by Product Category"),
-        make_table("Table_SegmentPerformance", 585, 470, 675, 235, 3003, ["Dim_Customer", "_Measures"], [
+        make_textbox("HeaderVisual", 20, 10, 1240, 40, 1000, "Commercial Sales & Profitability Performance Dashboard", "15pt"),
+        make_slicer("Slicer_Year", 20, 56, 220, 54, 1500, "Dim_Date", "Year", "Order Year"),
+        make_slicer("Slicer_Region", 260, 56, 220, 54, 1501, "Dim_Location", "Region", "Region"),
+        make_slicer("Slicer_Segment", 500, 56, 240, 54, 1502, "Dim_Customer", "Segment", "Customer Segment"),
+        make_card("Card_TotalRevenue", 20, 122, 236, 86, 2000, "_Measures", "Total Revenue"),
+        make_card("Card_TotalProfit", 271, 122, 236, 86, 2001, "_Measures", "Total Profit"),
+        make_card("Card_ProfitMargin", 522, 122, 236, 86, 2002, "_Measures", "Profit Margin %"),
+        make_card("Card_TotalOrders", 773, 122, 236, 86, 2003, "_Measures", "Total Orders"),
+        make_card("Card_AOV", 1024, 122, 236, 86, 2004, "_Measures", "Average Order Value (AOV)"),
+        make_line_chart("Chart_MonthlyTrend", 20, 224, 785, 232, 3000, "Dim_Date", "Month-Year Date", "_Measures", ["Total Revenue", "Total Profit"], "Monthly Revenue & Profit Trend (2014 - 2017)"),
+        make_pie_chart("Chart_RegionDonut", 820, 224, 440, 232, 3001, "Dim_Location", "Region", "_Measures", "Total Revenue", "Revenue Distribution by Region"),
+        make_bar_chart("Chart_CategoryPerformance", 20, 472, 550, 232, 3002, "Dim_Product", "Category", "_Measures", ["Total Revenue", "Total Profit"], "Sales & Profitability by Product Category"),
+        make_table("Table_SegmentPerformance", 585, 472, 675, 232, 3003, ["Dim_Customer", "_Measures"], [
             ("Dim_Customer", "Segment", False),
             ("_Measures", "Total Revenue", True),
             ("_Measures", "Total Profit", True),
@@ -805,25 +805,24 @@ def generate_sales_report_layout():
         ], "Customer Segment Performance Matrix")
     ]
     
-    # Page 2 Visuals: Product & Profitability Matrix
+    # Page 2 Visuals: Product & Profitability Matrix (Canvas: 1280 x 720)
     p2_visuals = [
-        make_textbox("HeaderVisual_P2", 20, 12, 1240, 42, 1000, "Product Category & Margin Analysis Matrix", "18pt"),
-        make_card("Card_P2_Revenue", 20, 58, 298, 88, 2000, "_Measures", "Total Revenue"),
-        make_card("Card_P2_Profit", 334, 58, 298, 88, 2001, "_Measures", "Total Profit"),
-        make_card("Card_P2_Margin", 648, 58, 298, 88, 2002, "_Measures", "Profit Margin %"),
-        make_card("Card_P2_AvgDiscount", 962, 58, 298, 88, 2003, "_Measures", "Average Discount %"),
-        make_matrix("Matrix_SubCategory", 20, 156, 740, 304, 3000, [
+        make_textbox("HeaderVisual_P2", 20, 10, 1240, 40, 1000, "Product Category & Margin Analysis Matrix", "15pt"),
+        make_card("Card_P2_Revenue", 20, 60, 295, 86, 2000, "_Measures", "Total Revenue"),
+        make_card("Card_P2_Profit", 335, 60, 295, 86, 2001, "_Measures", "Total Profit"),
+        make_card("Card_P2_Margin", 650, 60, 295, 86, 2002, "_Measures", "Profit Margin %"),
+        make_card("Card_P2_AvgDiscount", 965, 60, 295, 86, 2003, "_Measures", "Average Discount %"),
+        make_matrix("Matrix_SubCategory", 20, 162, 740, 265, 3000, [
             ("Dim_Product", "Category"),
             ("Dim_Product", "Sub-Category")
-        ], ["Total Revenue", "Total Profit", "Profit Margin %", "Average Discount %"], "Product Category & Sub-Category Performance Matrix"),
-        make_scatter("Scatter_DiscountMargin", 775, 156, 485, 304, 3001, "Dim_Product", "Sub-Category", "Average Discount %", "Profit Margin %", "Total Revenue", "Margin Sensitivity vs. Discounting by Sub-Category"),
-        make_table("Table_TopProducts", 20, 470, 1240, 235, 3002, ["Dim_Product", "_Measures"], [
+        ], ["Total Revenue", "Total Profit", "Profit Margin %"], "Product Category & Sub-Category Performance Matrix"),
+        make_scatter("Scatter_DiscountMargin", 780, 162, 480, 265, 3001, "Dim_Product", "Sub-Category", "Average Discount %", "Profit Margin %", "Total Revenue", "Margin Sensitivity vs. Discounting by Sub-Category"),
+        make_table("Table_TopProducts", 20, 445, 1240, 260, 3002, ["Dim_Product", "_Measures"], [
             ("Dim_Product", "Product Name", False),
             ("Dim_Product", "Category", False),
             ("_Measures", "Total Revenue", True),
             ("_Measures", "Total Profit", True),
-            ("_Measures", "Profit Margin %", True),
-            ("_Measures", "Total Units Sold", True)
+            ("_Measures", "Profit Margin %", True)
         ], "Top Products Performance & Volume Breakdown")
     ]
     
