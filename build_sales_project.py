@@ -171,7 +171,7 @@ def generate_sales_model():
                 {"name": "Quarter", "dataType": "string", "sourceColumn": "Quarter"},
                 {"name": "Day of Week", "dataType": "string", "sourceColumn": "Day of Week"},
                 {"name": "Day of Week Number", "dataType": "int64", "sourceColumn": "Day of Week Number"},
-                {"name": "Month-Year Date", "dataType": "dateTime", "sourceColumn": "Month-Year Date", "formatString": "yyyy-MM"}
+                {"name": "Month-Year Date", "dataType": "dateTime", "sourceColumn": "Month-Year Date", "formatString": "yyyy-MM-dd"}
             ],
             "partitions": [
                 {
@@ -379,6 +379,11 @@ def make_slicer(name, x, y, width, height, z, table_name, col_name, title_text=N
                 "show": {"expr": {"Literal": {"Value": "true"}}},
                 "fontSize": {"expr": {"Literal": {"Value": "10D"}}}
             }
+        }],
+        "items": [{
+            "properties": {
+                "fontSize": {"expr": {"Literal": {"Value": "10D"}}}
+            }
         }]
     }
     if title_text:
@@ -456,7 +461,8 @@ def make_line_chart(name, x, y, width, height, z, cat_table, cat_col, measure_ta
                         "show": {"expr": {"Literal": {"Value": "true"}}},
                         "axisType": {"expr": {"Literal": {"Value": "'Continuous'"}}},
                         "showAxisTitle": {"expr": {"Literal": {"Value": "true"}}},
-                        "axisTitle": {"expr": {"Literal": {"Value": "'Order Month'"}}}
+                        "axisTitle": {"expr": {"Literal": {"Value": "'Order Month (Continuous Timeline)'"}}},
+                        "fontSize": {"expr": {"Literal": {"Value": "9D"}}}
                     }
                 }],
                 "valueAxis": [{
@@ -784,19 +790,19 @@ def make_scatter(name, x, y, width, height, z, cat_table, cat_col, x_measure, y_
 def generate_sales_report_layout():
     # Page 1 Visuals: Executive Sales Overview (Canvas: 1280 x 720)
     p1_visuals = [
-        make_textbox("HeaderVisual", 20, 10, 1240, 40, 1000, "Commercial Sales & Profitability Performance Dashboard", "15pt"),
-        make_slicer("Slicer_Year", 20, 56, 220, 54, 1500, "Dim_Date", "Year", "Order Year"),
-        make_slicer("Slicer_Region", 260, 56, 220, 54, 1501, "Dim_Location", "Region", "Region"),
-        make_slicer("Slicer_Segment", 500, 56, 240, 54, 1502, "Dim_Customer", "Segment", "Customer Segment"),
-        make_card("Card_TotalRevenue", 20, 122, 236, 86, 2000, "_Measures", "Total Revenue"),
-        make_card("Card_TotalProfit", 271, 122, 236, 86, 2001, "_Measures", "Total Profit"),
-        make_card("Card_ProfitMargin", 522, 122, 236, 86, 2002, "_Measures", "Profit Margin %"),
-        make_card("Card_TotalOrders", 773, 122, 236, 86, 2003, "_Measures", "Total Orders"),
-        make_card("Card_AOV", 1024, 122, 236, 86, 2004, "_Measures", "Average Order Value (AOV)"),
-        make_line_chart("Chart_MonthlyTrend", 20, 224, 785, 232, 3000, "Dim_Date", "Month-Year Date", "_Measures", ["Total Revenue", "Total Profit"], "Monthly Revenue & Profit Trend (2014 - 2017)"),
-        make_pie_chart("Chart_RegionDonut", 820, 224, 440, 232, 3001, "Dim_Location", "Region", "_Measures", "Total Revenue", "Revenue Distribution by Region"),
-        make_bar_chart("Chart_CategoryPerformance", 20, 472, 550, 232, 3002, "Dim_Product", "Category", "_Measures", ["Total Revenue", "Total Profit"], "Sales & Profitability by Product Category"),
-        make_table("Table_SegmentPerformance", 585, 472, 675, 232, 3003, ["Dim_Customer", "_Measures"], [
+        make_textbox("HeaderVisual", 20, 8, 1240, 36, 1000, "Commercial Sales & Profitability Performance Dashboard", "14pt"),
+        make_slicer("Slicer_Year", 20, 48, 220, 70, 1500, "Dim_Date", "Year", "Order Year"),
+        make_slicer("Slicer_Region", 260, 48, 220, 70, 1501, "Dim_Location", "Region", "Region"),
+        make_slicer("Slicer_Segment", 500, 48, 240, 70, 1502, "Dim_Customer", "Segment", "Customer Segment"),
+        make_card("Card_TotalRevenue", 20, 130, 236, 82, 2000, "_Measures", "Total Revenue"),
+        make_card("Card_TotalProfit", 271, 130, 236, 82, 2001, "_Measures", "Total Profit"),
+        make_card("Card_ProfitMargin", 522, 130, 236, 82, 2002, "_Measures", "Profit Margin %"),
+        make_card("Card_TotalOrders", 773, 130, 236, 82, 2003, "_Measures", "Total Orders"),
+        make_card("Card_AOV", 1024, 130, 236, 82, 2004, "_Measures", "Average Order Value (AOV)"),
+        make_line_chart("Chart_MonthlyTrend", 20, 228, 800, 224, 3000, "Dim_Date", "Month-Year Date", "_Measures", ["Total Revenue", "Total Profit"], "Monthly Revenue & Profit Trend (2014 - 2017)"),
+        make_pie_chart("Chart_RegionDonut", 835, 228, 425, 224, 3001, "Dim_Location", "Region", "_Measures", "Total Revenue", "Revenue Distribution by Region"),
+        make_bar_chart("Chart_CategoryPerformance", 20, 468, 550, 236, 3002, "Dim_Product", "Category", "_Measures", ["Total Revenue", "Total Profit"], "Sales & Profitability by Product Category"),
+        make_table("Table_SegmentPerformance", 585, 468, 675, 236, 3003, ["Dim_Customer", "_Measures"], [
             ("Dim_Customer", "Segment", False),
             ("_Measures", "Total Revenue", True),
             ("_Measures", "Total Profit", True),

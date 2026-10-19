@@ -314,7 +314,7 @@
             "name": "Month-Year Date",
             "dataType": "dateTime",
             "sourceColumn": "Month-Year Date",
-            "formatString": "yyyy-MM"
+            "formatString": "yyyy-MM-dd"
           }
         ],
         "partitions": [
