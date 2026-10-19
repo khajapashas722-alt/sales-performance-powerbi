@@ -459,7 +459,7 @@ def make_line_chart(name, x, y, width, height, z, cat_table, cat_col, measure_ta
                 "categoryAxis": [{
                     "properties": {
                         "show": {"expr": {"Literal": {"Value": "true"}}},
-                        "axisType": {"expr": {"Literal": {"Value": "'Continuous'"}}},
+                        "axisType": {"expr": {"Literal": {"Value": "'Scalar'"}}},
                         "showAxisTitle": {"expr": {"Literal": {"Value": "true"}}},
                         "axisTitle": {"expr": {"Literal": {"Value": "'Order Month (Continuous Timeline)'"}}},
                         "fontSize": {"expr": {"Literal": {"Value": "9D"}}}
@@ -475,7 +475,7 @@ def make_line_chart(name, x, y, width, height, z, cat_table, cat_col, measure_ta
                 "legend": [{
                     "properties": {
                         "show": {"expr": {"Literal": {"Value": "true"}}},
-                        "position": {"expr": {"Literal": {"Value": "'TopLeft'"}}}
+                        "position": {"expr": {"Literal": {"Value": "'TopRight'"}}}
                     }
                 }]
             }
@@ -619,13 +619,32 @@ def make_table(name, x, y, width, height, z, from_tables, fields, title_text=Non
                 },
                 "Name": q_ref
             })
-    objects = {}
+    objects = {
+        "stylePreset": [{
+            "properties": {
+                "name": {"expr": {"Literal": {"Value": "'Condensed'"}}}
+            }
+        }],
+        "values": [{
+            "properties": {
+                "fontSize": {"expr": {"Literal": {"Value": "9D"}}},
+                "wordWrap": {"expr": {"Literal": {"Value": "true"}}}
+            }
+        }],
+        "columnHeaders": [{
+            "properties": {
+                "fontSize": {"expr": {"Literal": {"Value": "9D"}}},
+                "wordWrap": {"expr": {"Literal": {"Value": "true"}}},
+                "autoSizeColumnWidth": {"expr": {"Literal": {"Value": "true"}}}
+            }
+        }]
+    }
     if title_text:
         objects["title"] = [{
             "properties": {
                 "show": {"expr": {"Literal": {"Value": "true"}}},
                 "text": {"expr": {"Literal": {"Value": f"'{title_text}'"}}},
-                "fontSize": {"expr": {"Literal": {"Value": "12D"}}},
+                "fontSize": {"expr": {"Literal": {"Value": "11D"}}},
                 "fontColor": {"solid": {"color": {"expr": {"Literal": {"Value": "'#1A365D'"}}}}}
             }
         }]
@@ -828,7 +847,8 @@ def generate_sales_report_layout():
             ("Dim_Product", "Category", False),
             ("_Measures", "Total Revenue", True),
             ("_Measures", "Total Profit", True),
-            ("_Measures", "Profit Margin %", True)
+            ("_Measures", "Profit Margin %", True),
+            ("_Measures", "Total Units Sold", True)
         ], "Top Products Performance & Volume Breakdown")
     ]
     
