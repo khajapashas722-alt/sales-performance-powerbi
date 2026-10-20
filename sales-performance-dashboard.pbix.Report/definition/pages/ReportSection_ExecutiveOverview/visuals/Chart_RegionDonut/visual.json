@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "Chart_RegionDonut",
   "position": {
-    "x": 835,
-    "y": 228,
+    "x": 663.81011407226254,
+    "y": 244.66151970743599,
     "z": 10000,
-    "height": 224,
-    "width": 425
+    "height": 223.44087769199513,
+    "width": 296.39893465552188
   },
   "visual": {
     "visualType": "pieChart",

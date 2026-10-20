@@ -8,10 +8,16 @@ model Model
 
 annotation PBI_ProTooling = ["DevMode"]
 
+annotation PBI_QueryOrder = ["Fact_Sales","Dim_Customer","Dim_Product","Dim_Location","Dim_Date","_Measures"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
 ref table Fact_Sales
 ref table Dim_Customer
 ref table Dim_Product
 ref table Dim_Location
 ref table Dim_Date
 ref table _Measures
+ref table DateTableTemplate_2bede3ea-1d4c-42b9-bd51-e507d74a3e48
+ref table LocalDateTable_f6e5fdf9-a0d3-4218-bdf7-439f635fa0af
 

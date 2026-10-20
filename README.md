@@ -50,6 +50,7 @@ sales-performance-powerbi/
 ├── dax_measures.dax                    # Complete DAX formula library with inline comments
 ├── power_query_transformations.m       # Power Query M-scripts for all tables & calendar
 ├── report_setup_guide.md               # Step-by-step reproduction instructions for Power BI
+├── test_sales_data.py                  # Unit and data parity test suite verifying benchmarks
 ├── PROJECT_WALKTHROUGH.md              # Beginner tutorial, DAX guide & exercises
 └── README.md                           # Complete documentation & interview guide
 ```

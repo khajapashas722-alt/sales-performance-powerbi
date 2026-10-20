@@ -7,7 +7,12 @@ table Dim_Date
 		isKey
 		formatString: yyyy-MM-dd
 		lineageTag: 491c8203-b15b-45bc-a022-94fc6877d60e
+		summarizeBy: none
 		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
 
 	column Year
 		dataType: int64
@@ -54,7 +59,12 @@ table Dim_Date
 		dataType: dateTime
 		formatString: yyyy-MM-dd
 		lineageTag: 90db37e6-8613-4b2a-ac91-0705e899fdfe
+		summarizeBy: none
 		sourceColumn: Month-Year Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
 
 	partition Dim_Date-Partition = m
 		mode: import

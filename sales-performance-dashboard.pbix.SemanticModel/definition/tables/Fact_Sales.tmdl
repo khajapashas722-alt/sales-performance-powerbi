@@ -4,68 +4,113 @@ table Fact_Sales
 	column 'Row ID'
 		dataType: int64
 		lineageTag: 4ab0475f-0754-4a41-8f31-983c996be5fa
+		summarizeBy: count
 		sourceColumn: Row ID
+
+		annotation SummarizationSetBy = Automatic
 
 	column 'Order ID'
 		dataType: string
 		lineageTag: 0d8b04da-6840-4545-8021-cb0f3c874d65
+		summarizeBy: none
 		sourceColumn: Order ID
+
+		annotation SummarizationSetBy = Automatic
 
 	column 'Order Date'
 		dataType: dateTime
 		formatString: yyyy-MM-dd
 		lineageTag: 8bf0fe80-1410-4d56-8c6a-928f3a51d43f
+		summarizeBy: none
 		sourceColumn: Order Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
 
 	column 'Ship Date'
 		dataType: dateTime
 		formatString: yyyy-MM-dd
 		lineageTag: df4b2fa5-3022-4009-9639-0a73053d3174
+		summarizeBy: none
 		sourceColumn: Ship Date
+
+		variation Variation
+			isDefault
+			relationship: 52c9c43e-d78f-473d-baec-e84f9720f87b
+			defaultHierarchy: LocalDateTable_f6e5fdf9-a0d3-4218-bdf7-439f635fa0af.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation SummarizationSetBy = Automatic
 
 	column 'Ship Mode'
 		dataType: string
 		lineageTag: b7ce1b44-f1ea-401b-9a00-1f032bb54aff
+		summarizeBy: none
 		sourceColumn: Ship Mode
+
+		annotation SummarizationSetBy = Automatic
 
 	column 'Customer ID'
 		dataType: string
 		lineageTag: a80926d7-bf15-4a35-9297-872c0aa2d034
+		summarizeBy: none
 		sourceColumn: Customer ID
+
+		annotation SummarizationSetBy = Automatic
 
 	column 'Product ID'
 		dataType: string
 		lineageTag: f617e0bf-b304-4b3f-9653-1e0dae2550d9
+		summarizeBy: none
 		sourceColumn: Product ID
+
+		annotation SummarizationSetBy = Automatic
 
 	column 'Postal Code'
 		dataType: string
 		lineageTag: 8998ba9a-e663-4f2b-9c64-44db549f26a6
+		summarizeBy: none
 		sourceColumn: Postal Code
+
+		annotation SummarizationSetBy = Automatic
 
 	column Sales
 		dataType: double
 		formatString: $#,0.00;($#,0.00);$#,0.00
 		lineageTag: 3d7351f0-55b5-4ebd-a977-57a52052b9c2
+		summarizeBy: sum
 		sourceColumn: Sales
+
+		annotation SummarizationSetBy = Automatic
 
 	column Quantity
 		dataType: int64
 		formatString: #,0
 		lineageTag: bb4a353b-f179-406c-9dd8-60e99dac96d4
+		summarizeBy: sum
 		sourceColumn: Quantity
+
+		annotation SummarizationSetBy = Automatic
 
 	column Discount
 		dataType: double
 		formatString: 0.00%
 		lineageTag: b088a3f1-6d4c-4463-8486-3b2757c89f9f
+		summarizeBy: sum
 		sourceColumn: Discount
+
+		annotation SummarizationSetBy = Automatic
 
 	column Profit
 		dataType: double
 		formatString: $#,0.00;($#,0.00);$#,0.00
 		lineageTag: fb2fcd16-906e-4f7d-b206-d83e4d34d738
+		summarizeBy: sum
 		sourceColumn: Profit
+
+		annotation SummarizationSetBy = Automatic
 
 	partition Fact_Sales-Partition = m
 		mode: import

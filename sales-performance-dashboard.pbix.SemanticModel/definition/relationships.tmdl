@@ -14,3 +14,8 @@ relationship Fact_Sales_Date_Rel
 	fromColumn: Fact_Sales.'Order Date'
 	toColumn: Dim_Date.Date
 
+relationship 52c9c43e-d78f-473d-baec-e84f9720f87b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Fact_Sales.'Ship Date'
+	toColumn: LocalDateTable_f6e5fdf9-a0d3-4218-bdf7-439f635fa0af.Date
+

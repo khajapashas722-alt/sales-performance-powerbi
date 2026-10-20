@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "Scatter_DiscountMargin",
   "position": {
-    "x": 780,
-    "y": 162,
+    "x": 480.61910584766912,
+    "y": 162.27549776513612,
     "z": 6000,
     "height": 265,
     "width": 480
@@ -112,5 +112,65 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "599f6f9030ba35f2b503",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_Product"
+              }
+            },
+            "Property": "Sub-Category"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "b3f6bc7d31d2e1637bc5",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Total Revenue"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "3e9d90dad24126ae9c9b",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Average Discount %"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "298884b0dc9bc6c94831",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "Profit Margin %"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
